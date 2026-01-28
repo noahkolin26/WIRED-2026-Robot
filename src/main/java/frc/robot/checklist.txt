@@ -1,0 +1,13 @@
+Checklist for making code robot-ready (last updated 1/28):
+[*] Set up Intake subsystem (completed 1/28)
+[ ] Stubs for Intake commands and controls
+[ ] Set up Agitators subsystem
+[ ] Stubs for Agitators commands and controls
+[ ] Set up Launch subsystem
+[ ] Stubs for Launch commands and controls
+[ ] Backup Tank Drive implemented
+[ ] Simulator Testing
+[ ] Autonomous Sketch/Stubs
+[ ] PhotonVision Installation on Pi
+[ ] PhotonVision code for detection
+[ ] PhotonVision code for robot response

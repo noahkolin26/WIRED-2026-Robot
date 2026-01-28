@@ -31,6 +31,20 @@ public final class Constants {
 
     public static final double MAX_WHEEL_SPEED = 4.5; // meters/sec
   }
+  
+  public static class IntakeConstants {
+    public static final int kIntakePort = 5;
+
+    public static final double defaultIntakePower = 0.4;
+  }
+
+  public static class AgitatorConstants {
+    public static final int kAgitatorPort1 = 6;
+    public static final int kAgitatorPort2 = 7;
+
+    public static final double defaultAgitator1Power = 0.4;
+    public static final double defaultAgitator2Power = 0.4;
+  }
 
   public static final double kMecanumSlewRate = 1.6;
   public static final double kMecanumRotateSlewRate = 1.6;
