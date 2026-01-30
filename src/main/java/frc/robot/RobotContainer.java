@@ -6,9 +6,9 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-import frc.robot.commands.FieldRelativeMecanumDrive;
-import frc.robot.commands.MecanumDrive;
-import frc.robot.subsystems.DriveSubsystem;
+// import frc.robot.commands.Driving.FieldRelativeMecanumDrive;
+import frc.robot.commands.Driving.MecanumDrive;
+import frc.robot.subsystems.*;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,6 +23,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+  private final Intake m_intake = new Intake();
+  private final Shooter m_shooter = new Shooter();
+  private final Agitators m_agitators = new Agitators();
 
   private final XboxController xboxController =
       new XboxController(OperatorConstants.kDriverControllerPort);

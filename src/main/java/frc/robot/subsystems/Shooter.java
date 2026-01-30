@@ -13,24 +13,24 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.spark.config.*;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import frc.robot.Constants.AgitatorConstants;
+import frc.robot.Constants.ShooterConstants;;
 
-public class Agitators extends SubsystemBase {
-  private SparkMax agitatorMotor;
+public class Shooter extends SubsystemBase {
+  private SparkMax shootMotor;
     
-  public Agitators() {
-    agitatorMotor = new SparkMax(AgitatorConstants.kAgitatorPort, MotorType.kBrushless);
-    SparkMaxConfig agitatorMotorConfig = new SparkMaxConfig();
+  public Shooter() {
+    shootMotor = new SparkMax(ShooterConstants.kShooterPort, MotorType.kBrushless);
+    SparkMaxConfig shootMotorConfig = new SparkMaxConfig();
     // configure agitator motor
-    agitatorMotor.configure(agitatorMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    shootMotor.configure(shootMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  public void setAgitators(double speed) {
-    agitatorMotor.set(speed);
+  public void setShooter(double speed) {
+    shootMotor.set(speed);
   }
 
-  public void stopAgitators() {
-    agitatorMotor.set(0);
+  public void stopShooter() {
+    shootMotor.set(0);
   }
 
   /**

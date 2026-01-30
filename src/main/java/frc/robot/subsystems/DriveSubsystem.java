@@ -11,26 +11,34 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
-import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
-import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
-import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
-import com.revrobotics.spark.*;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.RobotBase;
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.robot.sim.SimGyro;
+
 import com.revrobotics.ResetMode;
 import com.revrobotics.PersistMode;
 import com.revrobotics.spark.config.*;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Constants.DriveConstants;
+import frc.robot.sim.DriveSim;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
+import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
+import edu.wpi.first.wpilibj.DriverStation;
 
 import com.studica.frc.AHRS;
 
@@ -52,12 +60,15 @@ public class DriveSubsystem extends SubsystemBase {
   private final MecanumDriveOdometry odometry;
 
   private final AHRS gyro;
+  private final SimGyro simGyro = new SimGyro();
+  private final Field2d field = new Field2d();
 
   private final PIDController frontLeftPID = new PIDController(1.2, 0.0, 0.1);
   private final PIDController frontRightPID = new PIDController(1.2, 0.0, 0.1);
   private final PIDController backLeftPID = new PIDController(1.2, 0.0, 0.1);
   private final PIDController backRightPID = new PIDController(1.2, 0.0, 0.1);
 
+  private DriveSim sim; // only constructed in simulation
     
   public DriveSubsystem() {
     // FRONT LEFT
@@ -140,6 +151,10 @@ public class DriveSubsystem extends SubsystemBase {
             },
             this // Reference to this subsystem to set requirements
     );
+
+    if (RobotBase.isSimulation()) {
+      sim = new DriveSim(frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor, simGyro);
+    }
   }
 
   /**
@@ -310,10 +325,23 @@ public void driveFieldRelative(
         getHeading(),
         getWheelPositions()
     );
+
+    // Display pose if in sim; otherwise you'll want to do real odometry here.
+    if (RobotBase.isSimulation() && sim != null) {
+      field.setRobotPose(sim.getPose());
+    }
+
   }
 
     @Override
   public void simulationPeriodic() {
-}
+    if (sim != null) {
+      sim.update();
+    }
+  }
+
+  public Pose2d getSimPose() {
+    return (sim != null) ? sim.getPose() : new Pose2d();
+  }
 
 }

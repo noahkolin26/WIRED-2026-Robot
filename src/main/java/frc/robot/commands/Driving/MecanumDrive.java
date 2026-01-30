@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.Driving;
 
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -11,7 +11,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class FieldRelativeMecanumDrive extends Command {
+public class MecanumDrive extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final DriveSubsystem m_driveSubsystem;
   private DoubleSupplier m_xSpeed;
@@ -23,7 +23,7 @@ public class FieldRelativeMecanumDrive extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public FieldRelativeMecanumDrive(DriveSubsystem subsystem, DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rot) {
+  public MecanumDrive(DriveSubsystem subsystem, DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rot) {
     m_driveSubsystem = subsystem;
     m_xSpeed = xSpeed;
     m_ySpeed = ySpeed;
@@ -39,7 +39,7 @@ public class FieldRelativeMecanumDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_driveSubsystem.driveFieldRelative(m_xSpeed.getAsDouble(), m_ySpeed.getAsDouble(), m_rot.getAsDouble());
+    m_driveSubsystem.mecanumDrive(m_xSpeed.getAsDouble(), m_ySpeed.getAsDouble(), m_rot.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
