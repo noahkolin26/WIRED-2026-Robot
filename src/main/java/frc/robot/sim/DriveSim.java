@@ -142,7 +142,7 @@ public class DriveSim {
     rlEncSim.setVelocity(rlMotorRPM);
     rrEncSim.setVelocity(rrMotorRPM);
 
-    // 8) Let the SPARK sim “advance” too (keeps its internal sim state consistent)
+    // 8) Let the SPARK sim advance too (keeps its internal sim state consistent)
     flSparkSim.iterate(flMotorRPM, vbus, dt);
     frSparkSim.iterate(frMotorRPM, vbus, dt);
     rlSparkSim.iterate(rlMotorRPM, vbus, dt);

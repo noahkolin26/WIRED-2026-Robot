@@ -19,8 +19,12 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
+import com.pathplanner.lib.config.RobotConfig.*;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -63,10 +67,10 @@ public class DriveSubsystem extends SubsystemBase {
   private final SimGyro simGyro = new SimGyro();
   private final Field2d field = new Field2d();
 
-  private final PIDController frontLeftPID = new PIDController(1.2, 0.0, 0.1);
-  private final PIDController frontRightPID = new PIDController(1.2, 0.0, 0.1);
-  private final PIDController backLeftPID = new PIDController(1.2, 0.0, 0.1);
-  private final PIDController backRightPID = new PIDController(1.2, 0.0, 0.1);
+  private final PIDController frontLeftPID = new PIDController(0.5, 0.0, 0.1);
+  private final PIDController frontRightPID = new PIDController(0.5, 0.0, 0.1);
+  private final PIDController backLeftPID = new PIDController(0.5, 0.0, 0.1);
+  private final PIDController backRightPID = new PIDController(0.5, 0.0, 0.1);
 
   private DriveSim sim; // only constructed in simulation
     
@@ -84,9 +88,11 @@ public class DriveSubsystem extends SubsystemBase {
     SparkMaxConfig frontRightConfig = new SparkMaxConfig();
     frontRightConfig.encoder.positionConversionFactor(DriveConstants.metersPerRotation);
     frontRightConfig.encoder.velocityConversionFactor(DriveConstants.metersPerRotation / 60.0);
-    // config the config
+    // config the fr motor
+    frontRightConfig.inverted(true);
     frontRightMotor = new SparkMax(DriveConstants.kFrontRightDrivePort, MotorType.kBrushless);
     frontRightMotor.configure(frontRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    frontRightEnc = frontRightMotor.getEncoder();
 
     // BACK LEFT
     SparkMaxConfig backLeftConfig = new SparkMaxConfig();
@@ -95,22 +101,27 @@ public class DriveSubsystem extends SubsystemBase {
     // config the config
     backLeftMotor = new SparkMax(DriveConstants.kBackLeftDrivePort, MotorType.kBrushless);
     backLeftMotor.configure(backLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    backLeftEnc = backLeftMotor.getEncoder();
 
     // BACK RIGHT
     SparkMaxConfig backRightConfig = new SparkMaxConfig();
     backRightConfig.encoder.positionConversionFactor(DriveConstants.metersPerRotation);
     backRightConfig.encoder.velocityConversionFactor(DriveConstants.metersPerRotation / 60.0);
-    // config the config
+    // config the br motor
+    backRightConfig.inverted(true);
     backRightMotor = new SparkMax(DriveConstants.kBackRightDrivePort, MotorType.kBrushless);
     backRightMotor.configure(backRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    backRightEnc = backRightMotor.getEncoder();
 
     RobotConfig config;
-    config = new RobotConfig(0, 0, null, 0); // here to remove errors
     try {
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
-      // Handle exception as needed
-      e.printStackTrace();
+      DriverStation.reportError(
+          "PathPlanner RobotConfig failed to load. Did you deploy GUI settings?",
+          e.getStackTrace()
+      );
+      throw new RuntimeException(e);
     }
 
     // wheel distances from center of robot (meters)
@@ -175,22 +186,18 @@ public class DriveSubsystem extends SubsystemBase {
    * Drives the robot mecanum style using input from two sticks.
    */
   public void mecanumDrive(double x, double y, double r) {
-    double[] motorSpeeds = new double[4];
-    motorSpeeds[0] = x + y + r;
-    motorSpeeds[1] = x - y - r;
-    motorSpeeds[2] = x - y + r;
-    motorSpeeds[3] = x + y - r;
-    double max = Arrays.stream(motorSpeeds).max().getAsDouble();
-    if(max > 1) {
-      for(int i = 0; i<motorSpeeds.length; i++) {
-        motorSpeeds[i] /= max;
-      }
-    }
-    frontLeftMotor.set(motorSpeeds[0]);
-    frontRightMotor.set(motorSpeeds[1]);
-    backLeftMotor.set(motorSpeeds[2]);
-    backRightMotor.set(motorSpeeds[3]);
-  }
+  ChassisSpeeds speeds = new ChassisSpeeds(y, x, r);
+
+  MecanumDriveWheelSpeeds wheelSpeeds =
+      kinematics.toWheelSpeeds(speeds);
+
+  wheelSpeeds.desaturate(1.0);
+
+  frontLeftMotor.set(wheelSpeeds.frontLeftMetersPerSecond);
+  frontRightMotor.set(wheelSpeeds.frontRightMetersPerSecond);
+  backLeftMotor.set(wheelSpeeds.rearLeftMetersPerSecond);
+  backRightMotor.set(wheelSpeeds.rearRightMetersPerSecond);
+}
 
   /**
    * Resets all encoders to 0 position.
@@ -331,6 +338,7 @@ public void driveFieldRelative(
       field.setRobotPose(sim.getPose());
     }
 
+    publisher.set(getPose());
   }
 
     @Override
@@ -338,10 +346,24 @@ public void driveFieldRelative(
     if (sim != null) {
       sim.update();
     }
+
+    publisher.set(sim.getPose());
   }
 
   public Pose2d getSimPose() {
     return (sim != null) ? sim.getPose() : new Pose2d();
   }
 
+  private final DoublePublisher xInputPub =
+    NetworkTableInstance.getDefault().getDoubleTopic("Drive/X Input").publish();
+
+  private final DoublePublisher yInputPub =
+    NetworkTableInstance.getDefault().getDoubleTopic("Drive/Y Input").publish();
+
+  private final DoublePublisher rotInputPub =
+    NetworkTableInstance.getDefault().getDoubleTopic("Drive/Rot Input").publish();
+
+
+  StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
+  .getStructTopic("MyPose", Pose2d.struct).publish();
 }

@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Agitators;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,8 +41,8 @@ public class RobotContainer {
     configureBindings();
 
     // currently robot-relative, field-relative commented out below
-    m_driveSubsystem.setDefaultCommand(new MecanumDrive(m_driveSubsystem, () -> mecanumSpeedLimiter.calculate(getDriverLeftX()),
-    () -> mecanumSpeedLimiter.calculate(getDriverLeftY()), () -> mecanumSpeedLimiter.calculate(getDriverRightY())));
+    m_driveSubsystem.setDefaultCommand(new MecanumDrive(m_driveSubsystem, () -> -mecanumSpeedLimiter.calculate(getDriverLeftX()),
+    () -> -mecanumSpeedLimiter.calculate(getDriverLeftY()), () -> -mecanumSpeedLimiter.calculate(getDriverRightX())));
 
     //m_driveSubsystem.setDefaultCommand(new FieldRelativeMecanumDrive(m_driveSubsystem, () -> mecanumSpeedLimiter.calculate(getDriverLeftX()),
     //() -> mecanumSpeedLimiter.calculate(getDriverLeftY()), () -> mecanumSpeedLimiter.calculate(getDriverRightY())));
