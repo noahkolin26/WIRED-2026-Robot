@@ -33,6 +33,7 @@ import frc.robot.sim.SimGyro;
 import com.revrobotics.ResetMode;
 import com.revrobotics.PersistMode;
 import com.revrobotics.spark.config.*;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.sim.DriveSim;
@@ -77,38 +78,52 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
     // FRONT LEFT
     SparkMaxConfig frontLeftConfig = new SparkMaxConfig();
-    frontLeftConfig.encoder.positionConversionFactor(DriveConstants.metersPerRotation);
-    frontLeftConfig.encoder.velocityConversionFactor(DriveConstants.metersPerRotation / 60.0);
-    // config the config
+    frontLeftConfig.encoder
+      .positionConversionFactor(DriveConstants.metersPerRotation)
+      .velocityConversionFactor(DriveConstants.metersPerRotation / 60.0);
+    frontLeftConfig
+      .idleMode(IdleMode.kBrake)
+      .inverted(false);
+    
     frontLeftMotor = new SparkMax(DriveConstants.kFrontLeftDrivePort, MotorType.kBrushless);
     frontLeftMotor.configure(frontLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     frontLeftEnc = frontLeftMotor.getEncoder();
 
     // FRONT RIGHT
     SparkMaxConfig frontRightConfig = new SparkMaxConfig();
-    frontRightConfig.encoder.positionConversionFactor(DriveConstants.metersPerRotation);
-    frontRightConfig.encoder.velocityConversionFactor(DriveConstants.metersPerRotation / 60.0);
-    // config the fr motor
-    frontRightConfig.inverted(true);
+    frontRightConfig.encoder
+      .positionConversionFactor(DriveConstants.metersPerRotation)
+      .velocityConversionFactor(DriveConstants.metersPerRotation / 60.0);
+    frontRightConfig
+      .idleMode(IdleMode.kBrake)
+      .inverted(true);
+    
     frontRightMotor = new SparkMax(DriveConstants.kFrontRightDrivePort, MotorType.kBrushless);
     frontRightMotor.configure(frontRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     frontRightEnc = frontRightMotor.getEncoder();
 
     // BACK LEFT
     SparkMaxConfig backLeftConfig = new SparkMaxConfig();
-    backLeftConfig.encoder.positionConversionFactor(DriveConstants.metersPerRotation);
-    backLeftConfig.encoder.velocityConversionFactor(DriveConstants.metersPerRotation / 60.0);
-    // config the config
+    backLeftConfig.encoder
+      .positionConversionFactor(DriveConstants.metersPerRotation)
+      .velocityConversionFactor(DriveConstants.metersPerRotation / 60.0);
+    backLeftConfig
+      .idleMode(IdleMode.kBrake)
+      .inverted(false);
+    
     backLeftMotor = new SparkMax(DriveConstants.kBackLeftDrivePort, MotorType.kBrushless);
     backLeftMotor.configure(backLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     backLeftEnc = backLeftMotor.getEncoder();
 
     // BACK RIGHT
     SparkMaxConfig backRightConfig = new SparkMaxConfig();
-    backRightConfig.encoder.positionConversionFactor(DriveConstants.metersPerRotation);
-    backRightConfig.encoder.velocityConversionFactor(DriveConstants.metersPerRotation / 60.0);
-    // config the br motor
-    backRightConfig.inverted(true);
+    backRightConfig.encoder
+      .positionConversionFactor(DriveConstants.metersPerRotation)
+      .velocityConversionFactor(DriveConstants.metersPerRotation / 60.0);
+    backRightConfig
+      .idleMode(IdleMode.kBrake)
+      .inverted(true);
+    
     backRightMotor = new SparkMax(DriveConstants.kBackRightDrivePort, MotorType.kBrushless);
     backRightMotor.configure(backRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     backRightEnc = backRightMotor.getEncoder();
@@ -232,6 +247,10 @@ public class DriveSubsystem extends SubsystemBase {
     return odometry.getPoseMeters();
   }
 
+  public Command resetPoseCommand() {
+    return run(() -> resetPose(Pose2d.kZero)).withTimeout(0.25);
+  }
+
   /** Resets odometry to a known pose */
   public void resetPose(Pose2d pose) {
     odometry.resetPosition(
@@ -260,34 +279,10 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Drives the robot */
   public void drive(ChassisSpeeds speeds) {
+    mecanumDrive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
+  }
 
-  MecanumDriveWheelSpeeds targetWheelSpeeds =
-      kinematics.toWheelSpeeds(speeds);
-
-  // Prevent commanding impossible speeds
-  targetWheelSpeeds.desaturate(DriveConstants.MAX_WHEEL_SPEED);
-
-  double flOutput = frontLeftPID.calculate(
-      frontLeftEnc.getVelocity(),
-      targetWheelSpeeds.frontLeftMetersPerSecond);
-
-  double frOutput = frontRightPID.calculate(
-      frontRightEnc.getVelocity(),
-      targetWheelSpeeds.frontRightMetersPerSecond);
-
-  double blOutput = backLeftPID.calculate(
-      backLeftEnc.getVelocity(),
-      targetWheelSpeeds.rearLeftMetersPerSecond);
-
-  double brOutput = backRightPID.calculate(
-      backRightEnc.getVelocity(),
-      targetWheelSpeeds.rearRightMetersPerSecond);
-
-  frontLeftMotor.set(MathUtil.clamp(flOutput, -1.0, 1.0));
-  frontRightMotor.set(MathUtil.clamp(frOutput, -1.0, 1.0));
-  backLeftMotor.set(MathUtil.clamp(blOutput, -1.0, 1.0));
-  backRightMotor.set(MathUtil.clamp(brOutput, -1.0, 1.0));
-}
+  StructPublisher<ChassisSpeeds> publisher2 = NetworkTableInstance.getDefault().getStructTopic("MyChassisSpeeds", ChassisSpeeds.struct).publish();
 
 public void driveFieldRelative(
     double xSpeed,
@@ -302,13 +297,15 @@ public void driveFieldRelative(
           getHeading()
       );
 
-  drive(fieldRelativeSpeeds);
+  publisher2.set(fieldRelativeSpeeds);
+
+  mecanumDrive(fieldRelativeSpeeds.vxMetersPerSecond, fieldRelativeSpeeds.vyMetersPerSecond, fieldRelativeSpeeds.omegaRadiansPerSecond);
 }
 
 
   private Rotation2d getHeading() {
     if(RobotBase.isSimulation()) {
-      return Rotation2d.fromDegrees(-gyro.getAngle());
+      return simGyro.getRotation2d();
     }
 
     return Rotation2d.fromDegrees(-gyro.getAngle());
@@ -346,7 +343,9 @@ public void driveFieldRelative(
       field.setRobotPose(sim.getPose());
     }
 
-    publisher.set(getPose());
+    if (RobotBase.isReal()) {
+      publisher.set(getPose());
+    }
   }
 
     @Override
@@ -362,16 +361,7 @@ public void driveFieldRelative(
     return (sim != null) ? sim.getPose() : new Pose2d();
   }
 
-  private final DoublePublisher xInputPub =
-    NetworkTableInstance.getDefault().getDoubleTopic("Drive/X Input").publish();
+  StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
 
-  private final DoublePublisher yInputPub =
-    NetworkTableInstance.getDefault().getDoubleTopic("Drive/Y Input").publish();
-
-  private final DoublePublisher rotInputPub =
-    NetworkTableInstance.getDefault().getDoubleTopic("Drive/Rot Input").publish();
-
-
-  StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose2d.struct).publish();
+  StructPublisher<Rotation2d> rotPublisher = NetworkTableInstance.getDefault().getStructTopic("MyRotation", Rotation2d.struct).publish();
 }
