@@ -102,10 +102,10 @@ public class DriveSim {
     rrMotorSim.update(dt);
 
     // 3) Motor angular velocity -> wheel linear speed
-    double vFL = flMotorSim.getAngularVelocityRadPerSec() * Constants.DriveConstants.kWheelRadiusMeters;
-    double vFR = frMotorSim.getAngularVelocityRadPerSec() * Constants.DriveConstants.kWheelRadiusMeters;
-    double vRL = rlMotorSim.getAngularVelocityRadPerSec() * Constants.DriveConstants.kWheelRadiusMeters;
-    double vRR = rrMotorSim.getAngularVelocityRadPerSec() * Constants.DriveConstants.kWheelRadiusMeters;
+    double vFL = flMotorSim.getAngularVelocityRadPerSec() * Constants.DriveConstants.kWheelRadiusMeters / DriveConstants.kDriveGearing;
+    double vFR = frMotorSim.getAngularVelocityRadPerSec() * Constants.DriveConstants.kWheelRadiusMeters / DriveConstants.kDriveGearing;
+    double vRL = rlMotorSim.getAngularVelocityRadPerSec() * Constants.DriveConstants.kWheelRadiusMeters / DriveConstants.kDriveGearing;
+    double vRR = rrMotorSim.getAngularVelocityRadPerSec() * Constants.DriveConstants.kWheelRadiusMeters / DriveConstants.kDriveGearing;
 
     // 4) Wheel speeds -> chassis speeds (robot frame)
     ChassisSpeeds chassis =
@@ -123,25 +123,17 @@ public class DriveSim {
 
     // 7) Update encoder sim (NEO integrated encoder is motor-side)
     // Motor position/velocity from motor sims are motor-shaft values.
-    double flMotorRot = flMotorSim.getAngularPositionRad() / (2.0 * Math.PI);
-    double frMotorRot = frMotorSim.getAngularPositionRad() / (2.0 * Math.PI);
-    double rlMotorRot = rlMotorSim.getAngularPositionRad() / (2.0 * Math.PI);
-    double rrMotorRot = rrMotorSim.getAngularPositionRad() / (2.0 * Math.PI);
+    double r = DriveConstants.kWheelRadiusMeters;
 
-    double flMotorRPM = flMotorSim.getAngularVelocityRadPerSec() * 60.0 / (2.0 * Math.PI);
-    double frMotorRPM = frMotorSim.getAngularVelocityRadPerSec() * 60.0 / (2.0 * Math.PI);
-    double rlMotorRPM = rlMotorSim.getAngularVelocityRadPerSec() * 60.0 / (2.0 * Math.PI);
-    double rrMotorRPM = rrMotorSim.getAngularVelocityRadPerSec() * 60.0 / (2.0 * Math.PI);
+    double flPosMeters = flMotorSim.getAngularPositionRad() * r;
+    double frPosMeters = frMotorSim.getAngularPositionRad() * r;
+    double rlPosMeters = rlMotorSim.getAngularPositionRad() * r;
+    double rrPosMeters = rrMotorSim.getAngularPositionRad() * r;
 
-    double flPosMeters = flMotorRot * DriveConstants.metersPerRotation;
-    double frPosMeters = frMotorRot * DriveConstants.metersPerRotation;
-    double rlPosMeters = rlMotorRot * DriveConstants.metersPerRotation;
-    double rrPosMeters = rrMotorRot * DriveConstants.metersPerRotation;
-
-    double flVelMps = flMotorRPM * (DriveConstants.metersPerRotation / 60.0);
-    double frVelMps = frMotorRPM * (DriveConstants.metersPerRotation / 60.0);
-    double rlVelMps = rlMotorRPM * (DriveConstants.metersPerRotation / 60.0);
-    double rrVelMps = rrMotorRPM * (DriveConstants.metersPerRotation / 60.0);
+    double flVelMps = flMotorSim.getAngularVelocityRadPerSec() * r;
+    double frVelMps = frMotorSim.getAngularVelocityRadPerSec() * r;
+    double rlVelMps = rlMotorSim.getAngularVelocityRadPerSec() * r;
+    double rrVelMps = rrMotorSim.getAngularVelocityRadPerSec() * r;
 
     flEncSim.setPosition(flPosMeters);
     frEncSim.setPosition(frPosMeters);
@@ -154,6 +146,16 @@ public class DriveSim {
     rrEncSim.setVelocity(rrVelMps);
 
     // 8) Let the SPARK sim advance too (keeps its internal sim state consistent)
+    double flWheelRPM = flMotorSim.getAngularVelocityRadPerSec() * 60.0 / (2.0 * Math.PI);
+    double frWheelRPM = frMotorSim.getAngularVelocityRadPerSec() * 60.0 / (2.0 * Math.PI);
+    double rlWheelRPM = rlMotorSim.getAngularVelocityRadPerSec() * 60.0 / (2.0 * Math.PI);
+    double rrWheelRPM = rrMotorSim.getAngularVelocityRadPerSec() * 60.0 / (2.0 * Math.PI);
+
+    double flMotorRPM = flWheelRPM * DriveConstants.kDriveGearing;
+    double frMotorRPM = frWheelRPM * DriveConstants.kDriveGearing;
+    double rlMotorRPM = rlWheelRPM * DriveConstants.kDriveGearing;
+    double rrMotorRPM = rrWheelRPM * DriveConstants.kDriveGearing;
+
     flSparkSim.iterate(flMotorRPM, vbus, dt);
     frSparkSim.iterate(frMotorRPM, vbus, dt);
     rlSparkSim.iterate(rlMotorRPM, vbus, dt);

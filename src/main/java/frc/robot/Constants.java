@@ -33,21 +33,18 @@ public final class Constants {
     // Convert encoder units to meters
     // Wheel + gearing
     public static final double kWheelRadiusMeters = Units.inchesToMeters(3.0); // 6" diameter wheel
-    public static final double wheelDiameter = 0.1524; // 6 inches
-    public static final double gearRatio = 10.71;
-    public static final double kDriveGearing = 10.71; // motor rotations per 1 wheel rotation (example)
+    public static final double kWheelDiameterMeters = kWheelRadiusMeters * 2; // 6 inches
+    public static final double kDriveGearing = 12.76; // motor rotations per 1 wheel rotation (example)
 
     // Encoder conversion factors (NEO integrated encoder reports motor rotations/RPM)
-    public static final double kMotorRotationsToWheelMeters =
-        (2.0 * Math.PI * kWheelRadiusMeters) / kDriveGearing;
-    public static final double kMotorRPMToWheelMps =
-        (kMotorRotationsToWheelMeters / 60.0);
+    public static final double kMotorRotationsToWheelMeters = (2.0 * Math.PI * kWheelRadiusMeters) / kDriveGearing;
+    public static final double kMotorRPMToWheelMps = (kMotorRotationsToWheelMeters / 60.0);
 
     // Sim tuning (rough but works)
     public static final double kWheelMoi = 0.001; // kg*m^2 (rough guess)
     public static final double kDtSeconds = 0.02;
 
-    public static final double metersPerRotation = Math.PI * wheelDiameter / gearRatio;
+    public static final double metersPerRotation = Math.PI * kWheelDiameterMeters / kDriveGearing;
 
     public static final double MAX_WHEEL_SPEED = 4.5; // meters/sec
   }

@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.*;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -19,12 +17,10 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
-import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
-import com.pathplanner.lib.config.RobotConfig.*;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -48,7 +44,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import com.studica.frc.AHRS;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.MathUtil;
 
 public class DriveSubsystem extends SubsystemBase {
   private SparkMax frontLeftMotor;
@@ -184,20 +179,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public Command exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return run(
-        () -> {
-          
-        });
-  }
-
-  /**
    * Drives the robot mecanum style using input from two sticks.
    */
   public void mecanumDrive(double x, double y, double r) {
@@ -284,7 +265,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   StructPublisher<ChassisSpeeds> publisher2 = NetworkTableInstance.getDefault().getStructTopic("MyChassisSpeeds", ChassisSpeeds.struct).publish();
 
-public void driveFieldRelative(
+  public void driveFieldRelative(
     double xSpeed,
     double ySpeed,
     double rotSpeed
@@ -301,7 +282,6 @@ public void driveFieldRelative(
 
   mecanumDrive(fieldRelativeSpeeds.vxMetersPerSecond, fieldRelativeSpeeds.vyMetersPerSecond, fieldRelativeSpeeds.omegaRadiansPerSecond);
 }
-
 
   private Rotation2d getHeading() {
     if(RobotBase.isSimulation()) {
