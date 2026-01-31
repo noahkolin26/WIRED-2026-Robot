@@ -34,9 +34,6 @@ public class RobotContainer {
   private final CommandXboxController xboxController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
-  public static SlewRateLimiter mecanumSpeedLimiter = new SlewRateLimiter(Constants.kMecanumSlewRate);
-  public static SlewRateLimiter mecanumTurnLimiter = new SlewRateLimiter(Constants.kMecanumRotateSlewRate);
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     configureBindings();
@@ -44,9 +41,9 @@ public class RobotContainer {
     m_driveSubsystem.setDefaultCommand(
       new MecanumDrive(
         m_driveSubsystem,
-        () -> getDriverLeftY(),
-        () -> getDriverLeftX(),
-        () -> getDriverRightX()
+        () -> -getDriverLeftY(),
+        () -> -getDriverLeftX(),
+        () -> -getDriverRightX()
       )
     );
   }
