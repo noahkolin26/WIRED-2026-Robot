@@ -8,6 +8,7 @@ import frc.robot.subsystems.DriveSubsystem;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
@@ -45,7 +46,7 @@ public class FieldRelativeMecanumDrive extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_driveSubsystem.mecanumDrive(0, 0, 0);
+    m_driveSubsystem.drive(new ChassisSpeeds(0,0,0));
   }
 
   // Returns true when the command should end.

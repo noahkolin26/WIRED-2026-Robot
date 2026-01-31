@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 
 public class DriveSim {
   private final SparkMaxSim flSparkSim, frSparkSim, rlSparkSim, rrSparkSim;
@@ -132,15 +133,25 @@ public class DriveSim {
     double rlMotorRPM = rlMotorSim.getAngularVelocityRadPerSec() * 60.0 / (2.0 * Math.PI);
     double rrMotorRPM = rrMotorSim.getAngularVelocityRadPerSec() * 60.0 / (2.0 * Math.PI);
 
-    flEncSim.setPosition(flMotorRot);
-    frEncSim.setPosition(frMotorRot);
-    rlEncSim.setPosition(rlMotorRot);
-    rrEncSim.setPosition(rrMotorRot);
+    double flPosMeters = flMotorRot * DriveConstants.metersPerRotation;
+    double frPosMeters = frMotorRot * DriveConstants.metersPerRotation;
+    double rlPosMeters = rlMotorRot * DriveConstants.metersPerRotation;
+    double rrPosMeters = rrMotorRot * DriveConstants.metersPerRotation;
 
-    flEncSim.setVelocity(flMotorRPM);
-    frEncSim.setVelocity(frMotorRPM);
-    rlEncSim.setVelocity(rlMotorRPM);
-    rrEncSim.setVelocity(rrMotorRPM);
+    double flVelMps = flMotorRPM * (DriveConstants.metersPerRotation / 60.0);
+    double frVelMps = frMotorRPM * (DriveConstants.metersPerRotation / 60.0);
+    double rlVelMps = rlMotorRPM * (DriveConstants.metersPerRotation / 60.0);
+    double rrVelMps = rrMotorRPM * (DriveConstants.metersPerRotation / 60.0);
+
+    flEncSim.setPosition(flPosMeters);
+    frEncSim.setPosition(frPosMeters);
+    rlEncSim.setPosition(rlPosMeters);
+    rrEncSim.setPosition(rrPosMeters);
+
+    flEncSim.setVelocity(flVelMps);
+    frEncSim.setVelocity(frVelMps);
+    rlEncSim.setVelocity(rlVelMps);
+    rrEncSim.setVelocity(rrVelMps);
 
     // 8) Let the SPARK sim advance too (keeps its internal sim state consistent)
     flSparkSim.iterate(flMotorRPM, vbus, dt);

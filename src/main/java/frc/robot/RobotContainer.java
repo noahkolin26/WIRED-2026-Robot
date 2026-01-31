@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-// import frc.robot.commands.Driving.FieldRelativeMecanumDrive;
+import frc.robot.commands.Driving.FieldRelativeMecanumDrive;
 import frc.robot.commands.Driving.MecanumDrive;
 import frc.robot.subsystems.*;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Agitators;
+import java.util.function.DoubleSupplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,8 +31,8 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final Agitators m_agitators = new Agitators();
 
-  private final XboxController xboxController =
-      new XboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController xboxController =
+      new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   public static SlewRateLimiter mecanumSpeedLimiter = new SlewRateLimiter(Constants.kMecanumSlewRate);
   public static SlewRateLimiter mecanumTurnLimiter = new SlewRateLimiter(Constants.kMecanumRotateSlewRate);
@@ -40,12 +41,14 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
 
-    // currently robot-relative, field-relative commented out below
-    m_driveSubsystem.setDefaultCommand(new MecanumDrive(m_driveSubsystem, () -> -mecanumSpeedLimiter.calculate(getDriverLeftX()),
-    () -> -mecanumSpeedLimiter.calculate(getDriverLeftY()), () -> -mecanumSpeedLimiter.calculate(getDriverRightX())));
-
-    //m_driveSubsystem.setDefaultCommand(new FieldRelativeMecanumDrive(m_driveSubsystem, () -> mecanumSpeedLimiter.calculate(getDriverLeftX()),
-    //() -> mecanumSpeedLimiter.calculate(getDriverLeftY()), () -> mecanumSpeedLimiter.calculate(getDriverRightY())));
+    m_driveSubsystem.setDefaultCommand(
+      new MecanumDrive(
+        m_driveSubsystem,
+        () -> getDriverLeftY(),
+        () -> getDriverLeftX(),
+        () -> getDriverRightX()
+      )
+    );
   }
 
   /**
@@ -65,7 +68,13 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    xboxController.b().whileTrue(new MecanumDrive(m_driveSubsystem, constantOn, constantOff, constantOff));
+    xboxController.a().whileTrue(new MecanumDrive(m_driveSubsystem, constantOff, constantOn, constantOff));
+    xboxController.x().whileTrue(new MecanumDrive(m_driveSubsystem, constantOff, constantOff, constantOn));
   }
+
+  DoubleSupplier constantOn = () -> 1.0;
+  DoubleSupplier constantOff = () -> 0.0;
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -78,11 +87,11 @@ public class RobotContainer {
   }
 
   // The "driver" specification can be used to build in another controller for mechanisms later if desired.
-  public XboxController getXboxController() {
+  public CommandXboxController getXboxController() {
     return xboxController;
   }
 
-  public XboxController getDriverXboxController() {
+  public CommandXboxController getDriverXboxController() {
     return xboxController;
   }
 

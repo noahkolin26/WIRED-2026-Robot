@@ -176,9 +176,9 @@ public class DriveSubsystem extends SubsystemBase {
   public Command exampleMethodCommand() {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
+    return run(
         () -> {
-          /* one-time action goes here */
+          
         });
   }
 
@@ -186,18 +186,22 @@ public class DriveSubsystem extends SubsystemBase {
    * Drives the robot mecanum style using input from two sticks.
    */
   public void mecanumDrive(double x, double y, double r) {
-  ChassisSpeeds speeds = new ChassisSpeeds(y, x, r);
+    ChassisSpeeds speeds = new ChassisSpeeds(x, y, r);
 
-  MecanumDriveWheelSpeeds wheelSpeeds =
-      kinematics.toWheelSpeeds(speeds);
+    MecanumDriveWheelSpeeds wheelSpeeds =
+        kinematics.toWheelSpeeds(speeds);
 
-  wheelSpeeds.desaturate(1.0);
+    wheelSpeeds.desaturate(DriveConstants.MAX_WHEEL_SPEED);
 
-  frontLeftMotor.set(wheelSpeeds.frontLeftMetersPerSecond);
-  frontRightMotor.set(wheelSpeeds.frontRightMetersPerSecond);
-  backLeftMotor.set(wheelSpeeds.rearLeftMetersPerSecond);
-  backRightMotor.set(wheelSpeeds.rearRightMetersPerSecond);
-}
+    frontLeftMotor.set(clamp(wheelSpeeds.frontLeftMetersPerSecond / DriveConstants.MAX_WHEEL_SPEED, -1.0, 1.0));
+    frontRightMotor.set(clamp(wheelSpeeds.frontRightMetersPerSecond / DriveConstants.MAX_WHEEL_SPEED, -1.0, 1.0));
+    backLeftMotor.set(clamp(wheelSpeeds.rearLeftMetersPerSecond / DriveConstants.MAX_WHEEL_SPEED, -1.0, 1.0));
+    backRightMotor.set(clamp(wheelSpeeds.rearRightMetersPerSecond / DriveConstants.MAX_WHEEL_SPEED, -1.0, 1.0));
+  }
+
+  double clamp(double value, double min, double max) {
+      return Math.max(min, Math.min(max, value));
+  }
 
   /**
    * Resets all encoders to 0 position.
@@ -303,6 +307,10 @@ public void driveFieldRelative(
 
 
   private Rotation2d getHeading() {
+    if(RobotBase.isSimulation()) {
+      return Rotation2d.fromDegrees(-gyro.getAngle());
+    }
+
     return Rotation2d.fromDegrees(-gyro.getAngle());
   }
 

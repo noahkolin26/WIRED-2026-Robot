@@ -70,6 +70,6 @@ public final class Constants {
     public static final double defaultShooterPower = 0.4;
   }
 
-  public static final double kMecanumSlewRate = 1.6;
-  public static final double kMecanumRotateSlewRate = 1.6;
+  public static final double kMecanumSlewRate = 1000;
+  public static final double kMecanumRotateSlewRate = 1000;
 }
