@@ -4,7 +4,21 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.numbers.*;
+
+import java.io.IOException;
+import java.nio.file.Path;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -67,6 +81,29 @@ public final class Constants {
     public static final double defaultShooterPower = 0.4;
   }
 
-  public static final double kMecanumSlewRate = 1000;
-  public static final double kMecanumRotateSlewRate = 1000;
+  public static class VisionConstants {
+    public static final String kCameraName = "cameraName";
+    public static final Transform3d kRobotToCamera =
+      new Transform3d(
+        new Translation3d(0.25, 0.0, 0.30), // forward left up in meters from the center of the robot
+        new Rotation3d(0.0, 0.0, 0.0)
+      );
+    
+    public static final AprilTagFieldLayout kAprilTagLayout;
+
+    static {
+        try {
+            Path tagPath = Filesystem.getDeployDirectory()
+                    .toPath()
+                    .resolve("apriltags/myField.json");
+
+            kAprilTagLayout = new AprilTagFieldLayout(tagPath);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load AprilTag field layout", e);
+        }
+    }
+
+    // estimated vision error (x=y=0.7m, angle=1rad), tune based on how stable pose looks, could be dynamically adjusted based on number/proximity of tags
+    public static final Matrix<N3, N1> kVisionStdDevs = VecBuilder.fill(0.7, 0.7, 1.0);
+  }
 }

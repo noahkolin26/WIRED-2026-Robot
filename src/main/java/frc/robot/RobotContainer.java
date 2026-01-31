@@ -6,8 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-import frc.robot.commands.Driving.FieldRelativeMecanumDrive;
-import frc.robot.commands.Driving.MecanumDrive;
+import frc.robot.commands.Driving.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -16,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 import java.util.function.DoubleSupplier;
 
@@ -30,23 +30,25 @@ import com.pathplanner.lib.path.PathPlannerPath;
  */
 public class RobotContainer {
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  private final Intake m_intake = new Intake();
-  private final Shooter m_shooter = new Shooter();
-  private final Agitators m_agitators = new Agitators();
+  // private final Intake m_intake = new Intake();
+  // private final Shooter m_shooter = new Shooter();
+  // private final Agitators m_agitators = new Agitators();
 
   private final CommandXboxController xboxController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  private boolean fieldRelative = false;
+
   public RobotContainer() {
     configureBindings();
 
     m_driveSubsystem.setDefaultCommand(
-      new FieldRelativeMecanumDrive(
+      new GeneralizedMecanumDrive(
         m_driveSubsystem,
         () -> -getDriverLeftY(),
         () -> -getDriverLeftX(),
-        () -> -getDriverRightX()
+        () -> -getDriverRightX(),
+        () -> isFieldRelative()
       )
     );
   }
@@ -61,16 +63,10 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    // new Trigger(m_exampleSubsystem::exampleCondition)
-    //     .onTrue(new MecanumDrive(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
     xboxController.b().whileTrue(new MecanumDrive(m_driveSubsystem, constantOn, constantOff, constantOff));
     xboxController.a().whileTrue(new MecanumDrive(m_driveSubsystem, constantOff, constantOn, constantOff));
     xboxController.x().whileTrue(new MecanumDrive(m_driveSubsystem, constantOff, constantOff, constantOn));
+    xboxController.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
     xboxController.y()
       .and(xboxController.rightBumper())
       .onTrue(m_driveSubsystem.resetPoseCommand());
@@ -124,6 +120,10 @@ public class RobotContainer {
 
   public double getLeftTrigger() {
     return xboxController.getLeftTriggerAxis();
+  }
+
+  public boolean isFieldRelative() {
+    return fieldRelative;
   }
 
   public double getRightTrigger() {

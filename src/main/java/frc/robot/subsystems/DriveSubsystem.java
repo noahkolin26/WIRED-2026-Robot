@@ -8,7 +8,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.numbers.*;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -44,6 +45,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import com.studica.frc.AHRS;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 
 public class DriveSubsystem extends SubsystemBase {
   private SparkMax frontLeftMotor;
@@ -67,6 +69,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final PIDController frontRightPID = new PIDController(0.5, 0.0, 0.1);
   private final PIDController backLeftPID = new PIDController(0.5, 0.0, 0.1);
   private final PIDController backRightPID = new PIDController(0.5, 0.0, 0.1);
+
+  private MecanumDrivePoseEstimator poseEstimator;
 
   private DriveSim sim; // only constructed in simulation
     
@@ -178,9 +182,10 @@ public class DriveSubsystem extends SubsystemBase {
     }
   }
 
-  /**
-   * Drives the robot mecanum style using input from two sticks.
-   */
+public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> stdDevs) {
+  poseEstimator.addVisionMeasurement(pose, timestamp, stdDevs);
+}
+
   public void mecanumDrive(double x, double y, double r) {
     ChassisSpeeds speeds = new ChassisSpeeds(x, y, r);
 
@@ -194,45 +199,31 @@ public class DriveSubsystem extends SubsystemBase {
     backLeftMotor.set(clamp(wheelSpeeds.rearLeftMetersPerSecond / DriveConstants.MAX_WHEEL_SPEED, -1.0, 1.0));
     backRightMotor.set(clamp(wheelSpeeds.rearRightMetersPerSecond / DriveConstants.MAX_WHEEL_SPEED, -1.0, 1.0));
   }
-
   double clamp(double value, double min, double max) {
       return Math.max(min, Math.min(max, value));
   }
-
-  /**
-   * Resets all encoders to 0 position.
-   */
   public void resetEncoders() {
     frontLeftEnc.setPosition(0);
     frontRightEnc.setPosition(0);
     backLeftEnc.setPosition(0);
     backRightEnc.setPosition(0);
   }
-
-  /** Reset the gyro */
   public void zeroHeading() {
     gyro.reset();
   }
-
-  /**
-   * Returns the command for resetting the encoders.
-   * 
-   * @return A Command.
-   */
   public Command resetEncodersCommand() {
     return run(() -> resetEncoders()).withTimeout(0.25);
   }
-
-  /** Returns the robot pose on the field */
   public Pose2d getPose() {
+    if(RobotBase.isSimulation()) {
+      return sim.getPose();
+    }
+
     return odometry.getPoseMeters();
   }
-
   public Command resetPoseCommand() {
     return run(() -> resetPose(Pose2d.kZero)).withTimeout(0.25);
   }
-
-  /** Resets odometry to a known pose */
   public void resetPose(Pose2d pose) {
     odometry.resetPosition(
         getHeading(),
@@ -245,8 +236,6 @@ public class DriveSubsystem extends SubsystemBase {
     backRightPID.reset();
 
   }
-
-  /** Returns robot-relative chassis speeds */
   public ChassisSpeeds getCurrentSpeeds() {
     return kinematics.toChassisSpeeds(
         new MecanumDriveWheelSpeeds(
@@ -257,14 +246,10 @@ public class DriveSubsystem extends SubsystemBase {
         )
     );
   }
-
-  /** Drives the robot */
   public void drive(ChassisSpeeds speeds) {
     mecanumDrive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
   }
-
   StructPublisher<ChassisSpeeds> publisher2 = NetworkTableInstance.getDefault().getStructTopic("MyChassisSpeeds", ChassisSpeeds.struct).publish();
-
   public void driveFieldRelative(
     double xSpeed,
     double ySpeed,
@@ -282,7 +267,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   mecanumDrive(fieldRelativeSpeeds.vxMetersPerSecond, fieldRelativeSpeeds.vyMetersPerSecond, fieldRelativeSpeeds.omegaRadiansPerSecond);
 }
-
   private Rotation2d getHeading() {
     if(RobotBase.isSimulation()) {
       return simGyro.getRotation2d();
@@ -290,7 +274,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     return Rotation2d.fromDegrees(-gyro.getAngle());
   }
-
   private MecanumDriveWheelPositions getWheelPositions() {
   return new MecanumDriveWheelPositions(
       frontLeftEnc.getPosition(),
@@ -299,17 +282,10 @@ public class DriveSubsystem extends SubsystemBase {
       backRightEnc.getPosition()
   );
 }
-
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
   public boolean exampleCondition() {
     // Query some boolean state, such as a digital sensor.
     return false;
   }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -327,7 +303,6 @@ public class DriveSubsystem extends SubsystemBase {
       publisher.set(getPose());
     }
   }
-
     @Override
   public void simulationPeriodic() {
     if (sim != null) {
@@ -336,12 +311,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     publisher.set(sim.getPose());
   }
-
   public Pose2d getSimPose() {
     return (sim != null) ? sim.getPose() : new Pose2d();
   }
-
   StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
-
   StructPublisher<Rotation2d> rotPublisher = NetworkTableInstance.getDefault().getStructTopic("MyRotation", Rotation2d.struct).publish();
 }
