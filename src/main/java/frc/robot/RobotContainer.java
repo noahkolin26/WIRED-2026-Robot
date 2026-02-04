@@ -45,9 +45,9 @@ public class RobotContainer {
     m_driveSubsystem.setDefaultCommand(
       new GeneralizedMecanumDrive(
         m_driveSubsystem,
-        () -> -getDriverLeftY(),
-        () -> -getDriverLeftX(),
-        () -> -getDriverRightX(),
+        () -> -getDriverLeftY()*0.5,
+        () -> -getDriverLeftX()*0.5,
+        () -> -getDriverRightX()*0.5,
         () -> isFieldRelative()
       )
     );
