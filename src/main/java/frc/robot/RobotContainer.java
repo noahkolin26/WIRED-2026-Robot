@@ -4,11 +4,13 @@
 
 package frc.robot;
 
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.Driving.*;
 import frc.robot.subsystems.*;
-import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,9 +19,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
+import java.util.Set;
 import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 /**
@@ -30,6 +34,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
  */
 public class RobotContainer {
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+  private final Vision m_vision = new Vision();
   // private final Intake m_intake = new Intake();
   // private final Shooter m_shooter = new Shooter();
   // private final Agitators m_agitators = new Agitators();
@@ -51,6 +56,17 @@ public class RobotContainer {
         () -> isFieldRelative()
       )
     );
+
+    new RunCommand(() -> {
+      m_vision.getEstimatedGlobalPose().ifPresent(estimate -> {
+        m_driveSubsystem.addVisionMeasurement(
+            estimate.estimatedPose.toPose2d(),
+            estimate.timestampSeconds,
+            VisionConstants.kVisionStdDevs
+        );
+      });
+    });
+
   }
 
   /**
@@ -66,6 +82,7 @@ public class RobotContainer {
     xboxController.b().whileTrue(new MecanumDrive(m_driveSubsystem, constantOn, constantOff, constantOff));
     xboxController.a().whileTrue(new MecanumDrive(m_driveSubsystem, constantOff, constantOn, constantOff));
     xboxController.x().whileTrue(new MecanumDrive(m_driveSubsystem, constantOff, constantOff, constantOn));
+    xboxController.y().onTrue(alignToAprilTag(9)); // red side hub; make it dynamic which april tag can be aligned to later
     xboxController.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
     xboxController.y()
       .and(xboxController.rightBumper())
@@ -74,6 +91,36 @@ public class RobotContainer {
 
   DoubleSupplier constantOn = () -> 1.0;
   DoubleSupplier constantOff = () -> 0.0;
+
+  public Command alignToAprilTag(int tagID) {
+  return Commands.defer(
+      () -> {
+        Pose2d targetPose =
+            DriveSubsystem.getAlignmentPose(
+                tagID,
+                DriveConstants.kShootFromTag
+            );
+
+        if (targetPose == null) {
+          return Commands.none();
+        }
+
+        return AutoBuilder.pathfindToPose(
+            targetPose,
+            new PathConstraints(
+                2.0,  // max velocity (m/s)
+                1.5,   // max accel (m/s^2)
+                2.0, // max ang velocity (rad/s)
+                2.0  // max ang acceleratoin (rad/s^2)
+            ),
+            0.0
+        );
+      },
+      Set.of(m_driveSubsystem) // requirements
+  );
+}
+
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

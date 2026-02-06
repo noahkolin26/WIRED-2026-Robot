@@ -5,9 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.math.VecBuilder;
@@ -61,6 +64,19 @@ public final class Constants {
     public static final double metersPerRotation = Math.PI * kWheelDiameterMeters / kDriveGearing;
 
     public static final double MAX_WHEEL_SPEED = 4.5; // meters/sec
+
+    public static final MecanumDriveKinematics kMecanumDriveKinematics = new MecanumDriveKinematics(
+      new Translation2d(-0.1, 0.1),
+      new Translation2d(0.1, 0.1),
+      new Translation2d(-0.1, -0.1),
+      new Translation2d(0.1, -0.1));
+
+    public static final Transform2d kShootFromTag =
+      new Transform2d(
+          new Translation2d(-1.2, 0.0),
+          Rotation2d.fromDegrees(180)
+      );
+
   }
   
   public static class IntakeConstants {
@@ -95,7 +111,7 @@ public final class Constants {
         try {
             Path tagPath = Filesystem.getDeployDirectory()
                     .toPath()
-                    .resolve("apriltags/myField.json");
+                    .resolve("src\\main\\deploy\\2026-rebuilt-andymark.json");
 
             kAprilTagLayout = new AprilTagFieldLayout(tagPath);
         } catch (IOException e) {

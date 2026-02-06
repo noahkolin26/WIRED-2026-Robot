@@ -33,10 +33,12 @@ import com.revrobotics.spark.config.*;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.sim.DriveSim;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
@@ -152,6 +154,14 @@ public class DriveSubsystem extends SubsystemBase {
 
     odometry = new MecanumDriveOdometry(kinematics, getHeading(), getWheelPositions());
 
+    poseEstimator =
+    new MecanumDrivePoseEstimator(
+        DriveConstants.kMecanumDriveKinematics,
+        getHeading(),
+        getWheelPositions(),
+        new Pose2d()
+    );
+
     // Configure AutoBuilder last
     AutoBuilder.configure(
             this::getPose, // Robot pose supplier
@@ -214,12 +224,28 @@ public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> s
   public Command resetEncodersCommand() {
     return run(() -> resetEncoders()).withTimeout(0.25);
   }
+  public static Pose2d getAlignmentPose(
+    int tagID,
+    Transform2d offset
+) {
+  var tagPose3d =
+      VisionConstants.kAprilTagLayout.getTagPose(tagID);
+
+    if (tagPose3d.isEmpty()) {
+      return null;
+    }
+
+  return tagPose3d.get()
+      .toPose2d()
+      .transformBy(offset);
+}
+
   public Pose2d getPose() {
     if(RobotBase.isSimulation()) {
       return sim.getPose();
     }
 
-    return odometry.getPoseMeters();
+    return poseEstimator.getEstimatedPosition();
   }
   public Command resetPoseCommand() {
     return run(() -> resetPose(Pose2d.kZero)).withTimeout(0.25);
@@ -292,6 +318,11 @@ public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> s
     odometry.update(
         getHeading(),
         getWheelPositions()
+    );
+
+    poseEstimator.update(
+      getHeading(),
+      getWheelPositions()
     );
 
     // Display pose if in sim; otherwise you'll want to do real odometry here.
