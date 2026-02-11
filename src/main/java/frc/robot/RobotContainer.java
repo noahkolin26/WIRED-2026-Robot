@@ -25,6 +25,7 @@ import java.util.function.DoubleSupplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -45,6 +46,9 @@ public class RobotContainer {
   private boolean fieldRelative = false;
 
   public RobotContainer() {
+    NamedCommands.registerCommand("Turn Left 90", new Turn(m_driveSubsystem, 90));
+    NamedCommands.registerCommand("Turn Right 90", new Turn(m_driveSubsystem, -90));
+
     configureBindings();
 
     m_driveSubsystem.setDefaultCommand(

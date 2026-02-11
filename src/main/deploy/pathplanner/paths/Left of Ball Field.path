@@ -3,61 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 3.5297521551724147,
+        "y": 5.354450431034484
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2332068327022525,
-        "y": 6.861503373119397
+        "x": 3.430334920283991,
+        "y": 5.917380459381909
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.6509976798143846,
-        "y": 6.6090255220417635
+        "x": 3.5297521551724147,
+        "y": 7.426476293103449
       },
       "prevControl": {
-        "x": 3.0062184805688377,
-        "y": 7.065955574519361
+        "x": 2.6809152192215944,
+        "y": 6.982585276131763
       },
       "nextControl": {
-        "x": 4.2957768790599316,
-        "y": 6.152095469564165
+        "x": 3.9902882116227762,
+        "y": 7.66730914307939
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.592900232018562,
-        "y": 4.30969837587007
+        "x": 7.595614224137931,
+        "y": 6.879148706896551
       },
       "prevControl": {
-        "x": 4.003909321200503,
-        "y": 3.3080082916266313
-      },
-      "nextControl": {
-        "x": 1.1818911428366237,
-        "y": 5.311388460113509
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 5.360232018561485,
-        "y": 4.85909512761021
-      },
-      "prevControl": {
-        "x": 4.451247195548242,
-        "y": 7.059000494557917
+        "x": 7.029387530151256,
+        "y": 6.930369093025242
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "L of Fuel Zone"
     }
   ],
   "rotationTargets": [],
@@ -74,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -89.13194855025452
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

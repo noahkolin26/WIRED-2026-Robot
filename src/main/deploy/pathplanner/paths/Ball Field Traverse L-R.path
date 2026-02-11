@@ -1,0 +1,115 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.595614224137931,
+        "y": 6.879148706896551
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.6102947296258,
+        "y": 6.629580113602802
+      },
+      "isLocked": false,
+      "linkedName": "L of Fuel Zone"
+    },
+    {
+      "anchor": {
+        "x": 7.595614224137931,
+        "y": 1.5817995689655175
+      },
+      "prevControl": {
+        "x": 7.624935344827584,
+        "y": 2.10957974137931
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "PointAndShoot",
+      "waypointRelativePos": 0.2800718132854579,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Turn Right 90"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Start Shooter"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 3.0
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Stop Shooter"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Turn Left 90"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "PointAndShoot",
+      "waypointRelativePos": 0.40754039497307026,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "PointAndShoot",
+      "waypointRelativePos": 0.696588868940754,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "PointAndShoot",
+      "waypointRelativePos": 0.9228007181328562,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -88.91907581333919
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -89.13194855025452
+  },
+  "useDefaultConstraints": true
+}

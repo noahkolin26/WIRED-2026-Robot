@@ -34,6 +34,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.Driving.Turn;
 import frc.robot.sim.DriveSim;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -293,7 +294,7 @@ public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> s
 
   mecanumDrive(fieldRelativeSpeeds.vxMetersPerSecond, fieldRelativeSpeeds.vyMetersPerSecond, fieldRelativeSpeeds.omegaRadiansPerSecond);
 }
-  private Rotation2d getHeading() {
+  public Rotation2d getHeading() {
     if(RobotBase.isSimulation()) {
       return simGyro.getRotation2d();
     }
