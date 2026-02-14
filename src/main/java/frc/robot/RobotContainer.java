@@ -9,6 +9,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.Driving.*;
+import frc.robot.commands.Intake.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -35,8 +36,8 @@ import com.pathplanner.lib.auto.NamedCommands;
  */
 public class RobotContainer {
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  private final Vision m_vision = new Vision();
-  // private final Intake m_intake = new Intake();
+  //private final Vision m_vision = new Vision();
+  private final Intake m_intake = new Intake();
   // private final Shooter m_shooter = new Shooter();
   // private final Agitators m_agitators = new Agitators();
 
@@ -46,9 +47,6 @@ public class RobotContainer {
   private boolean fieldRelative = false;
 
   public RobotContainer() {
-    NamedCommands.registerCommand("Turn Left 90", new Turn(m_driveSubsystem, 90));
-    NamedCommands.registerCommand("Turn Right 90", new Turn(m_driveSubsystem, -90));
-
     configureBindings();
 
     m_driveSubsystem.setDefaultCommand(
@@ -61,15 +59,15 @@ public class RobotContainer {
       )
     );
 
-    new RunCommand(() -> {
-      m_vision.getEstimatedGlobalPose().ifPresent(estimate -> {
-        m_driveSubsystem.addVisionMeasurement(
-            estimate.estimatedPose.toPose2d(),
-            estimate.timestampSeconds,
-            VisionConstants.kVisionStdDevs
-        );
-      });
-    });
+    // new RunCommand(() -> {
+    //   m_vision.getEstimatedGlobalPose().ifPresent(estimate -> {
+    //     m_driveSubsystem.addVisionMeasurement(
+    //         estimate.estimatedPose.toPose2d(),
+    //         estimate.timestampSeconds,
+    //         VisionConstants.kVisionStdDevs
+    //     );
+    //   });
+    // });
 
   }
 
@@ -86,8 +84,11 @@ public class RobotContainer {
     xboxController.b().whileTrue(new MecanumDrive(m_driveSubsystem, constantOn, constantOff, constantOff));
     xboxController.a().whileTrue(new MecanumDrive(m_driveSubsystem, constantOff, constantOn, constantOff));
     xboxController.x().whileTrue(new MecanumDrive(m_driveSubsystem, constantOff, constantOff, constantOn));
-    xboxController.y().onTrue(alignToAprilTag(9)); // red side hub; make it dynamic which april tag can be aligned to later
-    xboxController.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
+    xboxController.leftBumper().whileTrue(new RunIntake(m_intake, () -> Constants.IntakeConstants.defaultReverseIntakePower));
+    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, () -> Constants.IntakeConstants.defaultIntakePower));
+
+    // xboxController.y().onTrue(alignToAprilTag(9)); // red side hub; make it dynamic which april tag can be aligned to later
+    // xboxController.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
     xboxController.y()
       .and(xboxController.rightBumper())
       .onTrue(m_driveSubsystem.resetPoseCommand());

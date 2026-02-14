@@ -24,6 +24,8 @@ public class Intake extends SubsystemBase {
   public Intake() {
     intakeMotor = new SparkMax(IntakeConstants.kIntakePort, MotorType.kBrushless);
     SparkMaxConfig intakeMotorConfig = new SparkMaxConfig();
+    intakeMotorConfig
+      .inverted(false);
     // configure intake motor
     intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     intakeMotorEnc = intakeMotor.getEncoder();
