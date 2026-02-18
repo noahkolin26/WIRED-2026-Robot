@@ -93,9 +93,9 @@ public final class Constants {
   }
 
   public static class ShooterConstants {
-    public static final int kShooterPort = 7;
+    public static final int kShooterPort = 7; // TODO: Change this to the actual shooter port (note: the agitator port is not currently in use, so 6 is ok)
 
-    public static final double defaultShooterPower = 0.4;
+    public static final double defaultShooterPower = 0.5; // TODO: Change this to the actual shooter power, swap the Shooter.java orientation if this turns out negative
   }
 
   public static class VisionConstants {

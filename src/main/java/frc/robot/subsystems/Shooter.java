@@ -7,22 +7,23 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import com.revrobotics.spark.*;
-import com.revrobotics.ResetMode;
-import com.revrobotics.PersistMode;
-import com.revrobotics.spark.config.*;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 
-import frc.robot.Constants.ShooterConstants;;
+import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
-  private SparkMax shootMotor;
+  private TalonFX shootMotor;
     
   public Shooter() {
-    shootMotor = new SparkMax(ShooterConstants.kShooterPort, MotorType.kBrushless);
-    SparkMaxConfig shootMotorConfig = new SparkMaxConfig();
-    // configure agitator motor
-    shootMotor.configure(shootMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    shootMotor = new TalonFX(ShooterConstants.kShooterPort, CANBus.roboRIO());
+    MotorOutputConfigs config = new MotorOutputConfigs();
+    config
+      .withInverted(InvertedValue.Clockwise_Positive) // TODO: Change this to Counterclockwise positive if necessary.
+      .withNeutralMode(NeutralModeValue.Brake);
   }
 
   public void setShooter(double speed) {

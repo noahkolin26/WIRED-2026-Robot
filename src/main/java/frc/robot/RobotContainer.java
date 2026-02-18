@@ -5,11 +5,14 @@
 package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.Driving.*;
 import frc.robot.commands.Intake.*;
+import frc.robot.commands.Shooter.RunShooter;
 import frc.robot.subsystems.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -38,7 +41,7 @@ public class RobotContainer {
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
   //private final Vision m_vision = new Vision();
   private final Intake m_intake = new Intake();
-  // private final Shooter m_shooter = new Shooter();
+  private final Shooter m_shooter = new Shooter();
   // private final Agitators m_agitators = new Agitators();
 
   private final CommandXboxController xboxController =
@@ -81,15 +84,11 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    xboxController.b().whileTrue(new MecanumDrive(m_driveSubsystem, constantOn, constantOff, constantOff));
-    xboxController.a().whileTrue(new MecanumDrive(m_driveSubsystem, constantOff, constantOn, constantOff));
-    xboxController.x().whileTrue(new MecanumDrive(m_driveSubsystem, constantOff, constantOff, constantOn));
-    xboxController.leftBumper().whileTrue(new RunIntake(m_intake, () -> Constants.IntakeConstants.defaultReverseIntakePower));
-    xboxController.rightBumper().whileTrue(new RunIntake(m_intake, () -> Constants.IntakeConstants.defaultIntakePower));
-
-    // xboxController.y().onTrue(alignToAprilTag(9)); // red side hub; make it dynamic which april tag can be aligned to later
-    // xboxController.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
-    xboxController.y()
+    xboxController.y().whileTrue(new RunShooter(m_shooter, () -> ShooterConstants.defaultShooterPower));
+    xboxController.a().whileTrue(new RunIntake(m_intake, () -> IntakeConstants.defaultIntakePower));
+    
+    xboxController.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
+    xboxController.x()
       .and(xboxController.rightBumper())
       .onTrue(m_driveSubsystem.resetPoseCommand());
   }
