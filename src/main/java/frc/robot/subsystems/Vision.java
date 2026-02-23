@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.estimation.TargetModel;
 import org.photonvision.EstimatedRobotPose;
 
 import java.util.Optional;
@@ -17,23 +18,33 @@ import java.util.Optional;
 import frc.robot.Constants.VisionConstants;
 
 public class Vision extends SubsystemBase {
-  private final PhotonCamera camera = new PhotonCamera("cameraName");
+  private final PhotonCamera camera = new PhotonCamera("OV9281");
   private final PhotonPoseEstimator poseEstimator;
+  private final DriveSubsystem drive;
     
-  public Vision() {
-    poseEstimator = 
-      new PhotonPoseEstimator(
-        VisionConstants.kAprilTagLayout,
-        PoseStrategy.MULTI_TAG_PNP_ON_RIO,
-        VisionConstants.kRobotToCamera);
+  public Vision(DriveSubsystem drive) {
+    poseEstimator = new PhotonPoseEstimator(
+      VisionConstants.kAprilTagLayout,
+      VisionConstants.kRobotToCamera
+    );
+
+    this.drive = drive;
   }
 
-  public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-    var result = camera.getLatestResult();
-    if(!result.hasTargets()) return Optional.empty();
+public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+    var results = camera.getAllUnreadResults();
 
-    return poseEstimator.update(result);
-  }
+    Optional<EstimatedRobotPose> latestEstimate = Optional.empty();
+
+    for (var result : results) {
+        if (!result.hasTargets()) continue;
+
+        poseEstimator.setReferencePose(drive.getPose());
+        latestEstimate = poseEstimator.update(result);
+    }
+
+    return latestEstimate;
+}
 
   /**
    * Example command factory method.

@@ -22,7 +22,7 @@ public class Shooter extends SubsystemBase {
     shootMotor = new TalonFX(ShooterConstants.kShooterPort, CANBus.roboRIO());
     MotorOutputConfigs config = new MotorOutputConfigs();
     config
-      .withInverted(InvertedValue.Clockwise_Positive) // TODO: Change this to Counterclockwise positive if necessary.
+      .withInverted(InvertedValue.Clockwise_Positive)
       .withNeutralMode(NeutralModeValue.Brake);
   }
 

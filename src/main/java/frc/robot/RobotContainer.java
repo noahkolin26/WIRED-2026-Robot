@@ -39,7 +39,7 @@ import com.pathplanner.lib.auto.NamedCommands;
  */
 public class RobotContainer {
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  //private final Vision m_vision = new Vision();
+  private final Vision m_vision = new Vision(m_driveSubsystem);
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   // private final Agitators m_agitators = new Agitators();
@@ -62,15 +62,15 @@ public class RobotContainer {
       )
     );
 
-    // new RunCommand(() -> {
-    //   m_vision.getEstimatedGlobalPose().ifPresent(estimate -> {
-    //     m_driveSubsystem.addVisionMeasurement(
-    //         estimate.estimatedPose.toPose2d(),
-    //         estimate.timestampSeconds,
-    //         VisionConstants.kVisionStdDevs
-    //     );
-    //   });
-    // });
+    new RunCommand(() -> {
+      m_vision.getEstimatedGlobalPose().ifPresent(estimate -> {
+        m_driveSubsystem.addVisionMeasurement(
+            estimate.estimatedPose.toPose2d(),
+            estimate.timestampSeconds,
+            VisionConstants.kVisionStdDevs
+        );
+      });
+    });
 
   }
 
@@ -86,6 +86,7 @@ public class RobotContainer {
   private void configureBindings() {
     xboxController.y().whileTrue(new RunShooter(m_shooter, () -> ShooterConstants.defaultShooterPower));
     xboxController.a().whileTrue(new RunIntake(m_intake, () -> IntakeConstants.defaultIntakePower));
+    xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, () -> getRightTrigger()));
     
     xboxController.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
     xboxController.x()
