@@ -73,11 +73,15 @@ public class DriveSubsystem extends SubsystemBase {
   private final PIDController backLeftPID = new PIDController(0.5, 0.0, 0.1);
   private final PIDController backRightPID = new PIDController(0.5, 0.0, 0.1);
 
+  private LimelightVision limelightVision;
+
   private MecanumDrivePoseEstimator poseEstimator;
 
   private DriveSim sim; // only constructed in simulation
     
-  public DriveSubsystem() {
+  public DriveSubsystem(LimelightVision vision) {
+    limelightVision = vision;
+
     // FRONT LEFT
     SparkMaxConfig frontLeftConfig = new SparkMaxConfig();
     frontLeftConfig.encoder
@@ -321,10 +325,19 @@ public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> s
         getWheelPositions()
     );
 
-    poseEstimator.update(
-      getHeading(),
-      getWheelPositions()
-    );
+    Pose2d visionPose = limelightVision.getEstimatedPose();
+
+    if (visionPose != null) {
+        poseEstimator.addVisionMeasurement(
+            visionPose,
+            edu.wpi.first.wpilibj.Timer.getFPGATimestamp()
+        );
+    }
+
+    // poseEstimator.update(
+    //   getHeading(),
+    //   getWheelPositions()
+    // );
 
     // Display pose if in sim; otherwise you'll want to do real odometry here.
     if (RobotBase.isSimulation() && sim != null) {

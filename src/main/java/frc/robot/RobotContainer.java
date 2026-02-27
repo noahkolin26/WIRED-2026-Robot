@@ -16,7 +16,6 @@ import frc.robot.commands.Shooter.RunShooter;
 import frc.robot.subsystems.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -38,11 +37,11 @@ import com.pathplanner.lib.auto.NamedCommands;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  private final Vision m_vision = new Vision(m_driveSubsystem);
+  // private final Vision m_vision = new Vision(m_driveSubsystem);
+  private final LimelightVision m_limelightVision = new LimelightVision();
+  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(m_limelightVision);
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
-  // private final Agitators m_agitators = new Agitators();
 
   private final CommandXboxController xboxController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -50,6 +49,8 @@ public class RobotContainer {
   private boolean fieldRelative = false;
 
   public RobotContainer() {
+    m_limelightVision.setDrive(m_driveSubsystem);
+
     configureBindings();
 
     m_driveSubsystem.setDefaultCommand(
@@ -62,16 +63,15 @@ public class RobotContainer {
       )
     );
 
-    new RunCommand(() -> {
-      m_vision.getEstimatedGlobalPose().ifPresent(estimate -> {
-        m_driveSubsystem.addVisionMeasurement(
-            estimate.estimatedPose.toPose2d(),
-            estimate.timestampSeconds,
-            VisionConstants.kVisionStdDevs
-        );
-      });
-    });
-
+    // new RunCommand(() -> {
+    //   m_vision.getEstimatedGlobalPose().ifPresent(estimate -> {
+    //     m_driveSubsystem.addVisionMeasurement(
+    //         estimate.estimatedPose.toPose2d(),
+    //         estimate.timestampSeconds,
+    //         VisionConstants.kVisionStdDevs
+    //     );
+    //   });
+    // });
   }
 
   /**
@@ -92,6 +92,11 @@ public class RobotContainer {
     xboxController.x()
       .and(xboxController.rightBumper())
       .onTrue(m_driveSubsystem.resetPoseCommand());
+
+      xboxController.rightBumper().whileTrue(
+          new AimAtAprilTag(m_driveSubsystem, m_limelightVision, 4)
+              .onlyIf(() -> m_limelightVision.seesTag(4))
+      );
   }
 
   DoubleSupplier constantOn = () -> 1.0;
