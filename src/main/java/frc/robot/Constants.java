@@ -83,7 +83,7 @@ public final class Constants {
     public static final int kIntakePort = 5;
 
     public static final double defaultIntakePower = 0.9;
-    public static final double defaultReverseIntakePower = 0.3;
+    public static final double defaultReverseIntakePower = 0.9;
   }
 
   public static class AgitatorConstants {
@@ -95,7 +95,7 @@ public final class Constants {
   public static class ShooterConstants {
     public static final int kShooterPort = 7;
 
-    public static final double defaultShooterPower = 1;
+    public static final double defaultShooterPower = 0.5;
   }
 
   public static class VisionConstants {

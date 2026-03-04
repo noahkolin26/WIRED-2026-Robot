@@ -86,7 +86,7 @@ public class RobotContainer {
   private void configureBindings() {
     xboxController.y().whileTrue(new RunShooter(m_shooter, () -> ShooterConstants.defaultShooterPower));
     xboxController.a().whileTrue(new RunIntake(m_intake, () -> IntakeConstants.defaultIntakePower));
-    xboxController.rightTrigger().whileTrue(new RunIntake(m_intake, () -> getRightTrigger()));
+    xboxController.rightTrigger().whileTrue(new RunShooter(m_shooter, () -> getRightTrigger()));
     
     xboxController.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
     xboxController.x()
