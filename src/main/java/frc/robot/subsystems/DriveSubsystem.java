@@ -34,7 +34,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.commands.Driving.Turn;
 import frc.robot.sim.DriveSim;
 
 import edu.wpi.first.wpilibj2.command.Command;

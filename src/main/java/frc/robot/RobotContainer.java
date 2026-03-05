@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 
 import java.util.Set;
 import java.util.function.DoubleSupplier;
@@ -28,7 +27,6 @@ import java.util.function.DoubleSupplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -37,7 +35,6 @@ import com.pathplanner.lib.auto.NamedCommands;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // private final Vision m_vision = new Vision(m_driveSubsystem);
   private final LimelightVision m_limelightVision = new LimelightVision();
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(m_limelightVision);
   private final Intake m_intake = new Intake();
@@ -62,16 +59,6 @@ public class RobotContainer {
         () -> isFieldRelative()
       )
     );
-
-    // new RunCommand(() -> {
-    //   m_vision.getEstimatedGlobalPose().ifPresent(estimate -> {
-    //     m_driveSubsystem.addVisionMeasurement(
-    //         estimate.estimatedPose.toPose2d(),
-    //         estimate.timestampSeconds,
-    //         VisionConstants.kVisionStdDevs
-    //     );
-    //   });
-    // });
   }
 
   /**
