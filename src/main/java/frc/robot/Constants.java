@@ -95,6 +95,19 @@ public final class Constants {
     public static final int kShooterPort = 7;
 
     public static final double defaultShooterPower = 0.5;
+
+    // keep experimental results here so lirp is easy to update
+    public static final double[][] distancePowerPairs = {
+      {115, 0.5}, // in inches
+      {175, 0.6},
+      {190, 0.7}
+    };
+    public static final double shootPowerSHORT = 0.5;
+    public static final double shootPowerMEDIUM = 0.6;
+    public static final double shootPowerLONG = 0.7;
+    public static final double shootPowerFULL = 1;
+
+    public static final LinearInterpolator shootPowerLirp = new LinearInterpolator(distancePowerPairs);
   }
 
   public static class VisionConstants {

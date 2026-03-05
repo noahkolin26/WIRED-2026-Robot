@@ -1,12 +1,17 @@
 package frc.robot.subsystems;
 
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.LimelightHelpers;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import java.util.Optional;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.LimelightHelpers;
+
+import edu.wpi.first.math.filter.MedianFilter;
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.geometry.Pose2d;
+
+import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 public class LimelightVision extends SubsystemBase {
 
@@ -38,16 +43,43 @@ public class LimelightVision extends SubsystemBase {
     }
 
     public boolean hasTargets() {
-        return LimelightHelpers.getTV("limelight");
+        return LimelightHelpers.getTV(LIMELIGHT_NAME);
     }
 
     public boolean seesTag(int tagID) {
-        if (!LimelightHelpers.getTV("limelight")) return false;
-        return LimelightHelpers.getFiducialID("limelight") == tagID;
+        if (!LimelightHelpers.getTV(LIMELIGHT_NAME)) return false;
+        return LimelightHelpers.getFiducialID(LIMELIGHT_NAME) == tagID;
     }
 
     public double getTX() {
-        return LimelightHelpers.getTX("limelight");
+        return LimelightHelpers.getTX(LIMELIGHT_NAME);
+    }
+
+    public Optional<Double> getDirectDistanceToTag(int tagID) {
+        if (!LimelightHelpers.getTV(LIMELIGHT_NAME)) {
+            return Optional.empty();
+        }
+
+        if (LimelightHelpers.getFiducialID(LIMELIGHT_NAME) != tagID) {
+            return Optional.empty();
+        }
+
+        double[] pose = LimelightHelpers.getTargetPose_RobotSpace(LIMELIGHT_NAME);
+
+        if (pose == null || pose.length < 6) {
+            return Optional.empty();
+        }
+
+        double x = pose[0]; // left/right relative to robot
+        double z = pose[2]; // forward distance
+
+        double distance = Math.hypot(x, z);
+
+        if (distance > 10 || distance < 0.1) {
+            return Optional.empty();
+        }
+
+        return Optional.of(distance);
     }
 
     public Optional<Double> getDistanceToTag(int tagID) {
@@ -68,4 +100,38 @@ public class LimelightVision extends SubsystemBase {
 
         return Optional.of(distance);
     }
+
+    public DoubleSupplier getStableDistanceSupplier(int tagID) {
+
+    MedianFilter spikeFilter = new MedianFilter(5);
+    LinearFilter smoothingFilter = LinearFilter.movingAverage(8);
+
+    final double[] lastValue = {0.0};
+    final boolean[] hasValue = {false};
+
+    return () -> {
+
+        Optional<Double> distanceOpt = getDirectDistanceToTag(tagID);
+
+        if (distanceOpt.isPresent()) {
+
+            double raw = distanceOpt.get();
+
+            // Remove spikes
+            double despiked = spikeFilter.calculate(raw);
+
+            // Smooth normal jitter
+            double smoothed = smoothingFilter.calculate(despiked);
+
+            lastValue[0] = smoothed;
+            hasValue[0] = true;
+        }
+
+        if (hasValue[0]) {
+            return lastValue[0];
+        }
+
+        return 0.0;
+    };
+}
 }
