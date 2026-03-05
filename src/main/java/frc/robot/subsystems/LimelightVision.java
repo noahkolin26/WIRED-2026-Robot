@@ -28,6 +28,12 @@ public class LimelightVision extends SubsystemBase {
         this.drive = drive;
     }
 
+    private final LinearFilter txFilter = LinearFilter.movingAverage(5);
+
+    public double getFilteredTX() {
+        return txFilter.calculate(LimelightHelpers.getTX(LIMELIGHT_NAME));
+    }
+
     /**
      * Gets the robot pose estimated by AprilTags.
      */
@@ -82,6 +88,32 @@ public class LimelightVision extends SubsystemBase {
         return Optional.of(distance);
     }
 
+    public Optional<Double> getFusedDistanceToTag(int tagID) {
+        Optional<Double> visionDistance = getDirectDistanceToTag(tagID);
+        Optional<Double> odometryDistance = getDistanceToTag(tagID);
+
+        if (visionDistance.isEmpty() && odometryDistance.isEmpty()) {
+            return Optional.empty();
+        }
+
+        if (visionDistance.isEmpty()) {
+            return odometryDistance;
+        }
+
+        if (odometryDistance.isEmpty()) {
+            return visionDistance;
+        }
+
+        double visionWeight = 0.7;
+        double odometryWeight = 0.3;
+
+        double fused =
+            visionDistance.get() * visionWeight +
+            odometryDistance.get() * odometryWeight;
+
+        return Optional.of(fused);
+    }
+
     public Optional<Double> getDistanceToTag(int tagID) {
 
         Optional<Pose2d> tagPose =
@@ -102,36 +134,35 @@ public class LimelightVision extends SubsystemBase {
     }
 
     public DoubleSupplier getStableDistanceSupplier(int tagID) {
+        MedianFilter spikeFilter = new MedianFilter(5);
+        LinearFilter smoothingFilter = LinearFilter.movingAverage(8);
 
-    MedianFilter spikeFilter = new MedianFilter(5);
-    LinearFilter smoothingFilter = LinearFilter.movingAverage(8);
+        final double[] lastValue = {0.0};
+        final boolean[] hasValue = {false};
 
-    final double[] lastValue = {0.0};
-    final boolean[] hasValue = {false};
+        return () -> {
 
-    return () -> {
+            Optional<Double> distanceOpt = getFusedDistanceToTag(tagID);
 
-        Optional<Double> distanceOpt = getDirectDistanceToTag(tagID);
+            if (distanceOpt.isPresent()) {
 
-        if (distanceOpt.isPresent()) {
+                double raw = distanceOpt.get();
 
-            double raw = distanceOpt.get();
+                // Remove spikes
+                double despiked = spikeFilter.calculate(raw);
 
-            // Remove spikes
-            double despiked = spikeFilter.calculate(raw);
+                // Smooth normal jitter
+                double smoothed = smoothingFilter.calculate(despiked);
 
-            // Smooth normal jitter
-            double smoothed = smoothingFilter.calculate(despiked);
+                lastValue[0] = smoothed;
+                hasValue[0] = true;
+            }
 
-            lastValue[0] = smoothed;
-            hasValue[0] = true;
-        }
+            if (hasValue[0]) {
+                return lastValue[0];
+            }
 
-        if (hasValue[0]) {
-            return lastValue[0];
-        }
-
-        return 0.0;
+            return 0.0;
     };
 }
 }

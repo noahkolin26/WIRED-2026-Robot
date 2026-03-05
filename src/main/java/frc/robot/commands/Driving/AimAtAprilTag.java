@@ -11,7 +11,9 @@ public class AimAtAprilTag extends Command {
     private final LimelightVision vision;
     private final int targetTag;
 
-    private final double kP = 0.02; // tune this
+    private final double kP = 0.02;
+    private final double minCommand = 0.05;
+    private final double maxRotation = 1.5; // rad/s
 
     public AimAtAprilTag(DriveSubsystem drive, LimelightVision vision, int tagID) {
         this.drive = drive;
@@ -23,20 +25,30 @@ public class AimAtAprilTag extends Command {
 
     @Override
     public void execute() {
+
         if (!vision.seesTag(targetTag)) {
             drive.drive(new ChassisSpeeds(0, 0, 0));
             return;
         }
 
-        double tx = vision.getTX();
+        double tx = vision.getFilteredTX();
+
         double rotationSpeed = -tx * kP;
+
+        // apply minimum command to overcome friction
+        if (Math.abs(rotationSpeed) < minCommand && Math.abs(tx) > 1.0) {
+            rotationSpeed = Math.copySign(minCommand, rotationSpeed);
+        }
+
+        // clamp max speed
+        rotationSpeed = Math.max(-maxRotation, Math.min(maxRotation, rotationSpeed));
 
         drive.drive(new ChassisSpeeds(0, 0, rotationSpeed));
     }
 
     @Override
     public boolean isFinished() {
-        return vision.seesTag(targetTag) && Math.abs(vision.getTX()) < 1.0;
+        return vision.seesTag(targetTag) && Math.abs(vision.getTX()) < 0.5;
     }
 
     @Override
