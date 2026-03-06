@@ -12,7 +12,7 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.Driving.*;
 import frc.robot.commands.Intake.*;
-import frc.robot.commands.Shooter.RunShooter;
+import frc.robot.commands.Shooter.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -71,6 +71,19 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    // new bindings 3/5 at ~11PM, see README
+    xboxController.y().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerFULL, true));
+    xboxController.b().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerLONG, true));
+    xboxController.x().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerMEDIUM, true));
+    xboxController.a().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerSHORT, true));
+
+    xboxController.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
+    xboxController.rightBumper().whileTrue(new VisionHeadingAssist(m_driveSubsystem, m_limelightVision, 7, () -> -getDriverLeftY()*0.5, () -> -getDriverLeftX()*0.5));
+
+    xboxController.start().onTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
+    xboxController.back().onTrue(new SetIntake(m_intake, 0));
+
+    /*
     xboxController.y().whileTrue(new RunShooter(m_shooter, () -> ShooterConstants.defaultShooterPower));
     xboxController.a().whileTrue(new RunIntake(m_intake, () -> IntakeConstants.defaultIntakePower));
     xboxController.rightTrigger().whileTrue(new RunShooter(m_shooter, () -> getRightTrigger()));
@@ -84,6 +97,7 @@ public class RobotContainer {
           new AimAtAprilTag(m_driveSubsystem, m_limelightVision, 4)
               .onlyIf(() -> m_limelightVision.seesTag(4))
       );
+      */
   }
 
   DoubleSupplier constantOn = () -> 1.0;

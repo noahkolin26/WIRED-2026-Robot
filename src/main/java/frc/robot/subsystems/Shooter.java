@@ -17,6 +17,7 @@ import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
   private TalonFX shootMotor;
+  private double currentSpeed = 0.0;
     
   public Shooter() {
     shootMotor = new TalonFX(ShooterConstants.kShooterPort, CANBus.roboRIO());
@@ -28,10 +29,16 @@ public class Shooter extends SubsystemBase {
 
   public void setShooter(double speed) {
     shootMotor.set(speed);
+    currentSpeed = speed;
   }
 
   public void stopShooter() {
     shootMotor.set(0);
+    currentSpeed = 0.0;
+  }
+
+  public double getPower() {
+    return currentSpeed;
   }
 
   /**

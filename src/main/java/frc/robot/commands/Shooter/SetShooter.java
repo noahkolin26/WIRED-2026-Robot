@@ -6,17 +6,20 @@ import frc.robot.subsystems.Shooter;
 
 public class SetShooter extends Command {
   private final Shooter m_shooter;
-  private final double m_power;
+  private double m_power;
+  private boolean m_undo = false;
 
   /**
    * Sets the shooter to a given power.
    *
    * @param shooter The shooter subsystem used by this command.
    * @param power The power to set the shooter to.
+   * @param undo If "true", two identical setShooter commands lead to power = 0.
    */
-  public SetShooter(Shooter shooter, double power) {
+  public SetShooter(Shooter shooter, double power, boolean undo) {
     m_shooter = shooter;
     m_power = power;
+    m_undo = undo;
     
     addRequirements(shooter);
   }
@@ -30,6 +33,10 @@ public class SetShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (m_undo && m_shooter.getPower() == m_power) {
+      m_power = 0.0;
+    }
+
     m_shooter.setShooter(m_power);
   }
 

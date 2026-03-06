@@ -1,0 +1,42 @@
+(any commits marked "TheFactmaster" are from an obscure personal Github account inexplicably connected to VSCode on my laptop,
+so anything from that account is me (Noah) working remotely)
+
+NEW Note from 3/5 around 11:30PM:
+
+Here are the new button bindings that go with this commit:
+    - YBXA buttons are full/long/medium/short shooter power respectively.
+        These buttons SET the shooter so they don't need to be held down.
+        !!!! If the shooter is at power x, and that same button is pressed again, it will be set to 0 !!!
+        I can't think of a better way to handle four preset powers at the moment, but with the dashboard and that later I'll get it.
+    - Left bumper, when pressed, still swaps bot/field relative
+    - Right bumper, *while being held*, will take over driving controls and continue to point at April Tag 7 (if visible) no matter the forward/strafe
+        ! This was written by ChatGPT as a suggestion, and I don't know how conflicts are handled when >1 commands call the same subsystem
+    - The start/back buttons SET the intake on/off at the default power, no holding down needed
+        I don't have the controller with me, so I don't really know what buttons these would correspond to
+
+So far, there is NO implementation of the actual linear-interpolation dynamic shooting command, but it should(?) be in good working order.
+I added the commands VisionHeadingAssist (ChatGPT), SetIntake (me), and SetShooter (me) to accomplish the above.
+The "Shooter" subsystem now stores its current speed. Depending on how "SetShooter" is run, if the same speed is set twice in a row it might stop the shooter (see above).
+
+*NOTE* Almost all AprilTag logic has yet to account for changes in the alliance; most of the time the ID in question
+is "7" which IIRC is the hub for Red, but be extra careful if testing certain vision features on the robot.
+
+Before I am back I intend to try working with Elastic (the nice-looking dashboard) and PathPlanner for autonomous. It looks like Elastic is mostly drag and drop from NetworkTables which I will have to implement.
+
+-------------------------------------
+
+Note from 3/5 at 12:18PM:
+
+Some things from the list that are done...
+    - Linear interpolation, so we have a command for running the shooter and adjusting as we move closer and farther away
+    - Moving averages and blocked tag should be written into the code
+    - Presets for short/mid/long/full are in Constants
+
+Some things from the list I still have to do...
+    - Implement all of the commands/button bindings above
+    - Code for dashboard and cameras
+
+Some things not on the list I plan to do...
+    - ChatGPT has alluded to an auto-turn that works while driving, which would make it even easier to shoot with defenders
+    - I need to clean up the code that we aren't using anymore
+    - PathPlanner for autonomous, with NamedCommands to support passing to our alliance zone
