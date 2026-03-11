@@ -42,6 +42,8 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final Throat m_throat = new Throat();
 
+  public boolean isRedAlliance = false;
+
   private final CommandXboxController xboxController1 =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
@@ -76,23 +78,18 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // new bindings 3/5 at ~11PM, see README
-   
-
     xboxController1.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
-    xboxController1.rightBumper().whileTrue(new VisionHeadingAssist(m_driveSubsystem, m_limelightVision, 7, () -> -getDriverLeftY()*0.5, () -> -getDriverLeftX()*0.5));
+    xboxController1.rightBumper().whileTrue(new VisionHeadingAssist(m_driveSubsystem, m_limelightVision, hubAprilTag(), () -> -getDriverLeftY(), () -> -getDriverLeftX()));
 
-    xboxController1.rightBumper().onTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
-    xboxController1.leftBumper().onTrue(new SetIntake(m_intake, 0));
     xboxController1.a().onTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
     xboxController1.b().onTrue(new SetIntake(m_intake, 0));
 
-
-    
     xboxController2.y().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerFULL, true));
     xboxController2.b().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerLONG, true));
     xboxController2.x().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerMEDIUM, true));
     xboxController2.a().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerSHORT, true));
+
+    xboxController2.pov(0).whileTrue(new DynamicRunShooter(m_shooter, m_limelightVision.getStableDistanceSupplier(hubAprilTag())));
 
     xboxController2.rightBumper().onTrue(new SetThroat(m_throat,1.0));
     xboxController2.leftBumper().onTrue(new SetThroat(m_throat,0.0));
@@ -101,23 +98,6 @@ public class RobotContainer {
     // xboxController2.a().onTrue(new SetThroat(m_throat,1.0));
     // xboxController2.b().onTrue(new SetThroat(m_throat, -1.0));
     // xboxController2.y().onTrue(new SetThroat(m_throat,0.0));
-
-
-    /*
-    xboxController.y().whileTrue(new RunShooter(m_shooter, () -> ShooterConstants.defaultShooterPower));
-    xboxController.a().whileTrue(new RunIntake(m_intake, () -> IntakeConstants.defaultIntakePower));
-    xboxController.rightTrigger().whileTrue(new RunShooter(m_shooter, () -> getRightTrigger()));
-    
-    xboxController.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
-    xboxController.x()
-      .and(xboxController.rightBumper())
-      .onTrue(m_driveSubsystem.resetPoseCommand());
-
-      xboxController.rightBumper().whileTrue(
-          new AimAtAprilTag(m_driveSubsystem, m_limelightVision, 4)
-              .onlyIf(() -> m_limelightVision.seesTag(4))
-      );
-      */
   }
 
   DoubleSupplier constantOn = () -> 1.0;
@@ -168,6 +148,15 @@ public class RobotContainer {
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         return Commands.none();
+    }
+  }
+
+  // The hub has two AprilTags, this only tracks one of them
+  public int hubAprilTag() {
+    if(isRedAlliance) {
+      return 9;
+    } else {
+      return 26;
     }
   }
 
