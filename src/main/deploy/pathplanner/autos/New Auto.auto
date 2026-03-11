@@ -5,15 +5,21 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Start Shooter"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Left of Ball Field"
           }
         },
         {
-          "type": "parallel",
+          "type": "wait",
           "data": {
-            "commands": []
+            "waitTime": 2.0
           }
         }
       ]

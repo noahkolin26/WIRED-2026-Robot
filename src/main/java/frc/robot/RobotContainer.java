@@ -83,6 +83,8 @@ public class RobotContainer {
 
     xboxController1.a().onTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
     xboxController1.b().onTrue(new SetIntake(m_intake, 0));
+    xboxController1.rightTrigger(0.1).whileTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
+    xboxController1.rightTrigger(0.1).onFalse(new SetIntake(m_intake, 0));
 
     xboxController2.y().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerFULL, true));
     xboxController2.b().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerLONG, true));

@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.subsystems.Intake;
@@ -29,11 +30,6 @@ public class FullSendIt extends Command {
     @Override
     public void execute() {
         m_shooter.setShooter(m_speed);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
         m_throat.setThroatPower(1);
         m_intake.setIntake(1);
     }
