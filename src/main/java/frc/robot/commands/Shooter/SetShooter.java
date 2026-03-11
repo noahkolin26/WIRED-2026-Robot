@@ -27,17 +27,20 @@ public class SetShooter extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+     double power = m_power;
+
+    if (m_undo && m_shooter.getPower() == m_power) {
+      //m_power = 0.0; //can't directly set m_power or else it stays zero forver.
+      power = 0.0;
+    }
+
+    m_shooter.setShooter(power);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_undo && m_shooter.getPower() == m_power) {
-      m_power = 0.0;
-    }
-
-    m_shooter.setShooter(m_power);
+   
   }
 
   // Called once the command ends or is interrupted.
@@ -49,6 +52,6 @@ public class SetShooter extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

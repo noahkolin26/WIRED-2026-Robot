@@ -13,6 +13,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.Driving.*;
 import frc.robot.commands.Intake.*;
 import frc.robot.commands.Shooter.*;
+import frc.robot.commands.Throat.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -39,9 +40,13 @@ public class RobotContainer {
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(m_limelightVision);
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
+  private final Throat m_throat = new Throat();
 
-  private final CommandXboxController xboxController =
+  private final CommandXboxController xboxController1 =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+
+  private final CommandXboxController xboxController2 =
+      new CommandXboxController(OperatorConstants.kShooterControllerPort);
 
   private boolean fieldRelative = false;
 
@@ -53,9 +58,9 @@ public class RobotContainer {
     m_driveSubsystem.setDefaultCommand(
       new GeneralizedMecanumDrive(
         m_driveSubsystem,
-        () -> -getDriverLeftY()*0.5,
-        () -> -getDriverLeftX()*0.5,
-        () -> -getDriverRightX()*0.5,
+        () -> -getDriverLeftY(),//*0.5,
+        () -> -getDriverLeftX(),//*0.5,
+        () -> -getDriverRightX(),//*0.5,
         () -> isFieldRelative()
       )
     );
@@ -72,16 +77,31 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // new bindings 3/5 at ~11PM, see README
-    xboxController.y().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerFULL, true));
-    xboxController.b().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerLONG, true));
-    xboxController.x().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerMEDIUM, true));
-    xboxController.a().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerSHORT, true));
+   
 
-    xboxController.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
-    xboxController.rightBumper().whileTrue(new VisionHeadingAssist(m_driveSubsystem, m_limelightVision, 7, () -> -getDriverLeftY()*0.5, () -> -getDriverLeftX()*0.5));
+    xboxController1.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
+    xboxController1.rightBumper().whileTrue(new VisionHeadingAssist(m_driveSubsystem, m_limelightVision, 7, () -> -getDriverLeftY()*0.5, () -> -getDriverLeftX()*0.5));
 
-    xboxController.start().onTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
-    xboxController.back().onTrue(new SetIntake(m_intake, 0));
+    xboxController1.rightBumper().onTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
+    xboxController1.leftBumper().onTrue(new SetIntake(m_intake, 0));
+    xboxController1.a().onTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
+    xboxController1.b().onTrue(new SetIntake(m_intake, 0));
+
+
+    
+    xboxController2.y().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerFULL, true));
+    xboxController2.b().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerLONG, true));
+    xboxController2.x().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerMEDIUM, true));
+    xboxController2.a().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerSHORT, true));
+
+    xboxController2.rightBumper().onTrue(new SetThroat(m_throat,1.0));
+    xboxController2.leftBumper().onTrue(new SetThroat(m_throat,0.0));
+
+    //throat button on controller 2 for testing
+    // xboxController2.a().onTrue(new SetThroat(m_throat,1.0));
+    // xboxController2.b().onTrue(new SetThroat(m_throat, -1.0));
+    // xboxController2.y().onTrue(new SetThroat(m_throat,0.0));
+
 
     /*
     xboxController.y().whileTrue(new RunShooter(m_shooter, () -> ShooterConstants.defaultShooterPower));
@@ -153,31 +173,31 @@ public class RobotContainer {
 
   // The "driver" specification can be used to build in another controller for mechanisms later if desired.
   public CommandXboxController getXboxController() {
-    return xboxController;
+    return xboxController1;
   }
 
   public CommandXboxController getDriverXboxController() {
-    return xboxController;
+    return xboxController2;
   }
 
   public double getDriverLeftY() {
-    return xboxController.getLeftY();
+    return xboxController1.getLeftY();
   }
 
   public double getDriverRightY() {
-    return xboxController.getRightY();
+    return xboxController1.getRightY();
   }
 
   public double getDriverLeftX() {
-    return xboxController.getLeftX();
+    return xboxController1.getLeftX();
   }
 
   public double getDriverRightX() {
-    return xboxController.getRightX();
+    return xboxController1.getRightX();
   }
 
   public double getLeftTrigger() {
-    return xboxController.getLeftTriggerAxis();
+    return xboxController1.getLeftTriggerAxis();
   }
 
   public boolean isFieldRelative() {
@@ -185,6 +205,6 @@ public class RobotContainer {
   }
 
   public double getRightTrigger() {
-    return xboxController.getRightTriggerAxis();
+    return xboxController1.getRightTriggerAxis();
   }
 }

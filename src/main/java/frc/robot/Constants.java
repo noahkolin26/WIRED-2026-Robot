@@ -33,6 +33,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kShooterControllerPort = 1;
   }
 
   public static final class DriveConstants {
@@ -89,6 +90,13 @@ public final class Constants {
     public static final int kAgitatorPort = 6;
 
     public static final double defaultAgitatorPower = 0.4;
+  }
+
+  public static class ThroatConstants {
+    public static final int kThroatLeftPort = 8;
+    public static final int kThroatRightPort = 9;
+
+    public static final double defaultThroatPower = 1.0;
   }
 
   public static class ShooterConstants {
