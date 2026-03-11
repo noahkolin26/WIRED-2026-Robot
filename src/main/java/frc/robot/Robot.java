@@ -49,22 +49,25 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    LimelightHelpers.SetThrottle("limelight", 100);
+  }
 
   @Override
   public void disabledPeriodic() {
     Optional<DriverStation.Alliance> color;
     color = DriverStation.getAlliance();
     if(color.equals(Optional.of(DriverStation.Alliance.Blue))){
-      m_robotContainer.isRedAlliance = false;
+      RobotContainer.isRedAlliance = false;
     } else {
-      m_robotContainer.isRedAlliance = true;
+      RobotContainer.isRedAlliance = true;
     }
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    LimelightHelpers.SetThrottle("limelight", 0);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -79,6 +82,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    LimelightHelpers.SetThrottle("limelight", 0);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

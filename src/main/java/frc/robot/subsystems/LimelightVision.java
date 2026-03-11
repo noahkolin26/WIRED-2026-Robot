@@ -9,6 +9,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
+import frc.robot.RobotContainer;
 
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
@@ -19,6 +25,15 @@ public class LimelightVision extends SubsystemBase {
     private AprilTagFieldLayout fieldLayout;
     private static final String LIMELIGHT_NAME = "limelight"; 
     // Change if your Limelight name is different in the web UI
+
+    private final NetworkTable table =
+        NetworkTableInstance.getDefault().getTable("Vision");
+
+    private final BooleanPublisher seesTagPublisher =
+        table.getBooleanTopic("SeesTag").publish();
+
+    private final DoublePublisher distancePublisher =
+        table.getDoubleTopic("TagDistance").publish();
 
     public LimelightVision() {
         fieldLayout = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
@@ -59,6 +74,17 @@ public class LimelightVision extends SubsystemBase {
 
     public double getTX() {
         return LimelightHelpers.getTX(LIMELIGHT_NAME);
+    }
+
+    @Override
+    public void periodic() {
+        int hubAprilTag = RobotContainer.isRedAlliance ? 9 : 25;
+        boolean seesTag = seesTag(hubAprilTag);
+        seesTagPublisher.set(seesTag);
+
+        distancePublisher.set(
+            getStableDistanceSupplier(hubAprilTag).getAsDouble()
+        );
     }
 
     public Optional<Double> getDirectDistanceToTag(int tagID) {

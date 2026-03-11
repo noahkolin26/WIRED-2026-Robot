@@ -42,7 +42,7 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final Throat m_throat = new Throat();
 
-  public boolean isRedAlliance = false;
+  public static boolean isRedAlliance = false;
 
   private final CommandXboxController xboxController1 =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -156,7 +156,7 @@ public class RobotContainer {
     if(isRedAlliance) {
       return 9;
     } else {
-      return 26;
+      return 25;
     }
   }
 
