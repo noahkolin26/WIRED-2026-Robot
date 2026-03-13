@@ -78,14 +78,20 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+
+    //Driver Controller
     xboxController1.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
     xboxController1.rightBumper().whileTrue(new VisionHeadingAssist(m_driveSubsystem, m_limelightVision, hubAprilTag(), () -> -getDriverLeftY(), () -> -getDriverLeftX()));
 
     xboxController1.a().onTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
     xboxController1.b().onTrue(new SetIntake(m_intake, 0));
-    xboxController1.rightTrigger(0.1).whileTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
-    xboxController1.rightTrigger(0.1).onFalse(new SetIntake(m_intake, 0));
+    //xboxController1.x().onTrue(new SetIntake(m_intake, -0.1));  might need an emergency reverse
 
+    //This isn't working right now.  Even when holding the right trigger it is not moving.
+    //xboxController1.rightTrigger(0.1).whileTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
+    //xboxController1.rightTrigger(0.1).onFalse(new SetIntake(m_intake, 0));
+
+    //Shooter controller
     xboxController2.y().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerFULL, true));
     xboxController2.b().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerLONG, true));
     xboxController2.x().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerMEDIUM, true));

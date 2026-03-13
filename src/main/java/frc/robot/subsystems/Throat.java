@@ -12,12 +12,15 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.PersistMode;
 import com.revrobotics.spark.config.*;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Constants.ThroatConstants;
 
 public class Throat extends SubsystemBase {
   private SparkMax throatLeftMotor;
   private SparkMax throatRightMotor;
+  private RelativeEncoder throatLeftEnc;
+  private RelativeEncoder throatRightEnc;
     
   public Throat() {
     throatLeftMotor = new SparkMax(ThroatConstants.kThroatLeftPort, MotorType.kBrushed);
@@ -25,13 +28,14 @@ public class Throat extends SubsystemBase {
 
     SparkMaxConfig leftMotorConfig = new SparkMaxConfig();
     leftMotorConfig
-      .inverted(true);
-
+      .inverted(false);
+    throatLeftEnc = throatLeftMotor.getEncoder();
 
     SparkMaxConfig rightMotorConfig = new SparkMaxConfig();
     rightMotorConfig
-      .inverted(true)
+      .inverted(false)
       .follow(throatLeftMotor); //right is following left.  LEFT is LEADER
+    throatRightEnc = throatRightMotor.getEncoder();
 
     // configure throat motors
     throatLeftMotor.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

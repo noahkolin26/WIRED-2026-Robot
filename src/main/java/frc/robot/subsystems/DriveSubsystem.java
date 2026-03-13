@@ -196,9 +196,9 @@ public class DriveSubsystem extends SubsystemBase {
     }
   }
 
-public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> stdDevs) {
-  poseEstimator.addVisionMeasurement(pose, timestamp, stdDevs);
-}
+  public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> stdDevs) {
+    poseEstimator.addVisionMeasurement(pose, timestamp, stdDevs);
+  }
 
   public void mecanumDrive(double x, double y, double r) {
     ChassisSpeeds speeds = new ChassisSpeeds(x, y, r);
