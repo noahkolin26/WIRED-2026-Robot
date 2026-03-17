@@ -17,6 +17,8 @@ import frc.robot.commands.Throat.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -28,6 +30,8 @@ import java.util.function.DoubleSupplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+
+import choreo.auto.AutoChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,6 +45,8 @@ public class RobotContainer {
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Throat m_throat = new Throat();
+
+  private final SendableChooser<Command> autoChooser;
 
   public static boolean isRedAlliance = false;
 
@@ -66,6 +72,14 @@ public class RobotContainer {
         () -> isFieldRelative()
       )
     );
+
+    // Build an auto chooser. This will use Commands.none() as the default option.
+    autoChooser = AutoBuilder.buildAutoChooser();
+
+    // Another option that allows you to specify the default auto by its name
+    // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
@@ -87,10 +101,6 @@ public class RobotContainer {
     xboxController1.b().onTrue(new SetIntake(m_intake, 0));
     //xboxController1.x().onTrue(new SetIntake(m_intake, -0.1));  might need an emergency reverse
 
-    //This isn't working right now.  Even when holding the right trigger it is not moving.
-    //xboxController1.rightTrigger(0.1).whileTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
-    //xboxController1.rightTrigger(0.1).onFalse(new SetIntake(m_intake, 0));
-
     //Shooter controller
     xboxController2.y().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerFULL, true));
     xboxController2.b().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerLONG, true));
@@ -111,52 +121,13 @@ public class RobotContainer {
   DoubleSupplier constantOn = () -> 1.0;
   DoubleSupplier constantOff = () -> 0.0;
 
-  public Command alignToAprilTag(int tagID) {
-  return Commands.defer(
-      () -> {
-        Pose2d targetPose =
-            DriveSubsystem.getAlignmentPose(
-                tagID,
-                DriveConstants.kShootFromTag
-            );
-
-        if (targetPose == null) {
-          return Commands.none();
-        }
-
-        return AutoBuilder.pathfindToPose(
-            targetPose,
-            new PathConstraints(
-                2.0,  // max velocity (m/s)
-                1.5,   // max accel (m/s^2)
-                2.0, // max ang velocity (rad/s)
-                2.0  // max ang acceleratoin (rad/s^2)
-            ),
-            0.0
-        );
-      },
-      Set.of(m_driveSubsystem) // requirements
-  );
-}
-
-
-
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    try{
-        // Load the path you want to follow using its name in the GUI
-        PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
-
-        // Create a path following command using AutoBuilder. This will also trigger event markers.
-        return AutoBuilder.followPath(path);
-    } catch (Exception e) {
-        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-        return Commands.none();
-    }
+    return autoChooser.getSelected();
   }
 
   // The hub has two AprilTags, this only tracks one of them
@@ -166,6 +137,13 @@ public class RobotContainer {
     } else {
       return 25;
     }
+  }
+
+  public void turnOffAllMotors() {
+    m_driveSubsystem.mecanumDrive(0, 0, 0);
+    m_intake.setIntake(0);
+    m_shooter.setShooter(0);
+    m_throat.setThroatPower(0);
   }
 
   // The "driver" specification can be used to build in another controller for mechanisms later if desired.

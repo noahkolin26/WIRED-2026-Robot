@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.LimelightHelpers;
+import frc.robot.util.Telemetry;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -57,6 +58,8 @@ public class LimelightVision extends SubsystemBase {
             LimelightHelpers.getBotPoseEstimate_wpiBlue(LIMELIGHT_NAME);
 
         if (estimate != null && estimate.tagCount > 0) {
+            Telemetry.putFieldPose("Limelight Pose", estimate.pose);
+
             return estimate.pose;
         }
 

@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.util.Telemetry;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -213,36 +215,25 @@ public class DriveSubsystem extends SubsystemBase {
     backLeftMotor.set(clamp(wheelSpeeds.rearLeftMetersPerSecond / DriveConstants.MAX_WHEEL_SPEED, -1.0, 1.0));
     backRightMotor.set(clamp(wheelSpeeds.rearRightMetersPerSecond / DriveConstants.MAX_WHEEL_SPEED, -1.0, 1.0));
   }
+
   double clamp(double value, double min, double max) {
       return Math.max(min, Math.min(max, value));
   }
+
   public void resetEncoders() {
     frontLeftEnc.setPosition(0);
     frontRightEnc.setPosition(0);
     backLeftEnc.setPosition(0);
     backRightEnc.setPosition(0);
   }
+
   public void zeroHeading() {
     gyro.reset();
   }
+
   public Command resetEncodersCommand() {
     return run(() -> resetEncoders()).withTimeout(0.25);
   }
-  public static Pose2d getAlignmentPose(
-    int tagID,
-    Transform2d offset
-) {
-  var tagPose3d =
-      VisionConstants.kAprilTagLayout.getTagPose(tagID);
-
-    if (tagPose3d.isEmpty()) {
-      return null;
-    }
-
-  return tagPose3d.get()
-      .toPose2d()
-      .transformBy(offset);
-}
 
   public Pose2d getPose() {
     if(RobotBase.isSimulation()) {
@@ -251,9 +242,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     return poseEstimator.getEstimatedPosition();
   }
-  public Command resetPoseCommand() {
-    return run(() -> resetPose(Pose2d.kZero)).withTimeout(0.25);
-  }
+
   public void resetPose(Pose2d pose) {
     odometry.resetPosition(
         getHeading(),
@@ -264,8 +253,8 @@ public class DriveSubsystem extends SubsystemBase {
     frontRightPID.reset();
     backLeftPID.reset();
     backRightPID.reset();
-
   }
+
   public ChassisSpeeds getCurrentSpeeds() {
     return kinematics.toChassisSpeeds(
         new MecanumDriveWheelSpeeds(
@@ -276,27 +265,31 @@ public class DriveSubsystem extends SubsystemBase {
         )
     );
   }
+
   public void drive(ChassisSpeeds speeds) {
     mecanumDrive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
   }
+
   StructPublisher<ChassisSpeeds> publisher2 = NetworkTableInstance.getDefault().getStructTopic("MyChassisSpeeds", ChassisSpeeds.struct).publish();
+
   public void driveFieldRelative(
     double xSpeed,
     double ySpeed,
     double rotSpeed
-) {
-  ChassisSpeeds fieldRelativeSpeeds =
-      ChassisSpeeds.fromFieldRelativeSpeeds(
-          xSpeed,
-          ySpeed,
-          rotSpeed,
-          getHeading()
-      );
+  ) {
+    ChassisSpeeds fieldRelativeSpeeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            xSpeed,
+            ySpeed,
+            rotSpeed,
+            getHeading()
+        );
 
-  publisher2.set(fieldRelativeSpeeds);
+    publisher2.set(fieldRelativeSpeeds);
 
-  mecanumDrive(fieldRelativeSpeeds.vxMetersPerSecond, fieldRelativeSpeeds.vyMetersPerSecond, fieldRelativeSpeeds.omegaRadiansPerSecond);
-}
+    mecanumDrive(fieldRelativeSpeeds.vxMetersPerSecond, fieldRelativeSpeeds.vyMetersPerSecond, fieldRelativeSpeeds.omegaRadiansPerSecond);
+  }
+
   public Rotation2d getHeading() {
     if(RobotBase.isSimulation()) {
       return simGyro.getRotation2d();
@@ -304,18 +297,16 @@ public class DriveSubsystem extends SubsystemBase {
 
     return Rotation2d.fromDegrees(-gyro.getAngle());
   }
+
   private MecanumDriveWheelPositions getWheelPositions() {
-  return new MecanumDriveWheelPositions(
-      frontLeftEnc.getPosition(),
-      frontRightEnc.getPosition(),
-      backLeftEnc.getPosition(),
-      backRightEnc.getPosition()
-  );
-}
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+    return new MecanumDriveWheelPositions(
+        frontLeftEnc.getPosition(),
+        frontRightEnc.getPosition(),
+        backLeftEnc.getPosition(),
+        backRightEnc.getPosition()
+    );
   }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -333,31 +324,28 @@ public class DriveSubsystem extends SubsystemBase {
         );
     }
 
-    // poseEstimator.update(
-    //   getHeading(),
-    //   getWheelPositions()
-    // );
-
     // Display pose if in sim; otherwise you'll want to do real odometry here.
     if (RobotBase.isSimulation() && sim != null) {
       field.setRobotPose(sim.getPose());
     }
 
     if (RobotBase.isReal()) {
-      publisher.set(getPose());
+      Telemetry.putPose("Robot Pose", getPose());
+      Telemetry.putFieldPose("MainField", getPose());
     }
   }
-    @Override
+
+  @Override
   public void simulationPeriodic() {
     if (sim != null) {
       sim.update();
     }
 
-    publisher.set(sim.getPose());
+    Telemetry.putPose("Sim Robot Pose", sim.getPose());
+    Telemetry.putFieldPose("MainField", sim.getPose());
   }
+
   public Pose2d getSimPose() {
     return (sim != null) ? sim.getPose() : new Pose2d();
   }
-  StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
-  StructPublisher<Rotation2d> rotPublisher = NetworkTableInstance.getDefault().getStructTopic("MyRotation", Rotation2d.struct).publish();
 }

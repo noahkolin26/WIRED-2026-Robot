@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.util.Telemetry;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -33,24 +35,12 @@ public class Intake extends SubsystemBase {
 
   public void setIntake(double speed) {
     intakeMotor.set(speed);
+    Telemetry.putDouble("Goal Intake Speed", speed);
   }
 
   public void stopIntake() {
     intakeMotor.set(0);
-  }
-
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public Command exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
+    Telemetry.putDouble("Goal Intake Speed", 0);
   }
 
   /**
@@ -66,6 +56,7 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    Telemetry.putDouble("Actual Intake Speed", intakeMotorEnc.getVelocity());
   }
 
     @Override

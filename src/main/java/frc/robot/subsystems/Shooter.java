@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.util.Telemetry;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -11,6 +13,7 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.RelativeEncoder;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 
 // https://www.chiefdelphi.com/t/open-source-shoot-on-the-move-sotm-solver-ball-physics-sim-3-java-files-drop-in/516109
@@ -19,6 +22,9 @@ import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
   private TalonFX shootMotor;
+
+  private RelativeEncoder shootMotorEnc;
+
   private double currentSpeed = 0.0;
     
   public Shooter() {
@@ -32,29 +38,17 @@ public class Shooter extends SubsystemBase {
   public void setShooter(double speed) {
     shootMotor.set(speed);
     currentSpeed = speed;
+    Telemetry.putDouble("Goal Shooter Speed", speed);
   }
 
   public void stopShooter() {
     shootMotor.set(0);
     currentSpeed = 0.0;
+    Telemetry.putDouble("Goal Shooter Speed", 0);
   }
 
   public double getPower() {
     return currentSpeed;
-  }
-
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public Command exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
   }
 
   /**
@@ -70,6 +64,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    Telemetry.putDouble("Actual Shooter Speed", shootMotorEnc.getVelocity());
   }
 
     @Override

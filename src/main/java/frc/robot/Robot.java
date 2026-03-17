@@ -51,10 +51,6 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     LimelightHelpers.SetThrottle("limelight", 100);
-  }
-
-  @Override
-  public void disabledPeriodic() {
     Optional<DriverStation.Alliance> color;
     color = DriverStation.getAlliance();
     if(color.equals(Optional.of(DriverStation.Alliance.Blue))){
@@ -62,6 +58,12 @@ public class Robot extends TimedRobot {
     } else {
       RobotContainer.isRedAlliance = true;
     }
+    m_robotContainer.turnOffAllMotors();
+  }
+
+  @Override
+  public void disabledPeriodic() {
+
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */

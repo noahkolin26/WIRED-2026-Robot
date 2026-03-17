@@ -2,6 +2,8 @@ package frc.robot.util;
 
 import java.util.HashMap;
 
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
@@ -21,6 +23,7 @@ public class Telemetry {
     private static final HashMap<String, StringPublisher> strings = new HashMap<>();
     private static final HashMap<String, IntegerPublisher> integers = new HashMap<>();
     private static final HashMap<String, StructPublisher<Pose2d>> poses = new HashMap<>();
+    private static final HashMap<String, Field2d> fields = new HashMap<>();
 
     public static void putDouble(String key, double value) {
 
@@ -60,5 +63,30 @@ public class Telemetry {
             k -> table.getStructTopic(k, Pose2d.struct).publish());
 
         poses.get(key).set(pose);
+    }
+
+    public static void putFieldPose(String key, Pose2d pose) {
+
+        fields.computeIfAbsent(key, k -> {
+            Field2d field = new Field2d();
+            SmartDashboard.putData(k, field);
+            return field;
+        });
+
+        fields.get(key).setRobotPose(pose);
+    }
+
+    // this is how we could compare vision estimates, odometry estimates, etc visually (make sure fieldKey = key in putFieldPose)
+    public static void putFieldObjectPose(String fieldKey, String objectName, Pose2d pose) {
+
+        fields.computeIfAbsent(fieldKey, k -> {
+            Field2d field = new Field2d();
+            SmartDashboard.putData(k, field);
+            return field;
+        });
+
+        fields.get(fieldKey)
+            .getObject(objectName)
+            .setPose(pose);
     }
 }
