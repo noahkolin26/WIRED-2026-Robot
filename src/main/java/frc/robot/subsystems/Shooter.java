@@ -23,9 +23,8 @@ import frc.robot.Constants.ShooterConstants;
 public class Shooter extends SubsystemBase {
   private TalonFX shootMotor;
 
-  private RelativeEncoder shootMotorEnc;
-
   private double currentSpeed = 0.0;
+  private double actualSpeed = 0.0;
     
   public Shooter() {
     shootMotor = new TalonFX(ShooterConstants.kShooterPort, CANBus.roboRIO());
@@ -64,7 +63,9 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    Telemetry.putDouble("Actual Shooter Speed", shootMotorEnc.getVelocity());
+    actualSpeed = shootMotor.getDutyCycle().getValueAsDouble();
+    Telemetry.putBoolean("Shooter Near Power?", Math.abs(currentSpeed - actualSpeed) < 0.1);
+    Telemetry.putDouble("Actual Shooter Speed", actualSpeed);
   }
 
     @Override

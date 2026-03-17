@@ -88,12 +88,6 @@ public final class Constants {
     public static final double defaultReverseIntakePower = 0.9;
   }
 
-  public static class AgitatorConstants {
-    public static final int kAgitatorPort = 6;
-
-    public static final double defaultAgitatorPower = 0.4;
-  }
-
   public static class ThroatConstants {
     public static final int kThroatLeftPort = 8;
     public static final int kThroatRightPort = 9;

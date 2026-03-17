@@ -231,8 +231,8 @@ public class DriveSubsystem extends SubsystemBase {
     gyro.reset();
   }
 
-  public Command resetEncodersCommand() {
-    return run(() -> resetEncoders()).withTimeout(0.25);
+  public Command resetGyroCommand() {
+    return run(() -> zeroHeading()).withTimeout(0.25);
   }
 
   public Pose2d getPose() {

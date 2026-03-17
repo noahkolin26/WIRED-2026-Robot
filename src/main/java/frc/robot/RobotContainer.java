@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import java.util.Set;
 import java.util.function.DoubleSupplier;
@@ -30,6 +31,7 @@ import java.util.function.DoubleSupplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import choreo.auto.AutoChooser;
 
@@ -62,6 +64,24 @@ public class RobotContainer {
     m_limelightVision.setDrive(m_driveSubsystem);
 
     configureBindings();
+
+    // Shooting power (off, short, medium, long, full)
+    NamedCommands.registerCommand("shooterOff", new SetShooter(m_shooter, 0.0, false));
+    NamedCommands.registerCommand("shooterShort", new SetShooter(m_shooter, ShooterConstants.shootPowerSHORT, false));
+    NamedCommands.registerCommand("shooterMedium", new SetShooter(m_shooter, ShooterConstants.shootPowerMEDIUM, false));
+    NamedCommands.registerCommand("shooterLong", new SetShooter(m_shooter, ShooterConstants.shootPowerLONG, false));
+    NamedCommands.registerCommand("shooterFull", new SetShooter(m_shooter, ShooterConstants.shootPowerFULL, false));
+
+    // Intake power (off, default, full, reverse)
+    NamedCommands.registerCommand("intakeOff", new SetIntake(m_intake, 0.0));
+    NamedCommands.registerCommand("intakeDefault", new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
+    NamedCommands.registerCommand("intakeDefaultReverse", new SetIntake(m_intake, IntakeConstants.defaultReverseIntakePower));
+    NamedCommands.registerCommand("intakeFull", new SetIntake(m_intake, 1.0));
+
+    // Throat power (off, full, reverse)
+    NamedCommands.registerCommand("throatOff", new SetThroat(m_throat, 0.0));
+    NamedCommands.registerCommand("throatFull", new SetThroat(m_throat, 1.0));
+    NamedCommands.registerCommand("throatReverse", new SetThroat(m_throat, -1.0));
 
     m_driveSubsystem.setDefaultCommand(
       new GeneralizedMecanumDrive(
@@ -97,9 +117,14 @@ public class RobotContainer {
     xboxController1.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
     xboxController1.rightBumper().whileTrue(new VisionHeadingAssist(m_driveSubsystem, m_limelightVision, hubAprilTag(), () -> -getDriverLeftY(), () -> -getDriverLeftX()));
 
+    xboxController1.start().onTrue(m_driveSubsystem.resetGyroCommand());
+    
+
     xboxController1.a().onTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
     xboxController1.b().onTrue(new SetIntake(m_intake, 0));
     //xboxController1.x().onTrue(new SetIntake(m_intake, -0.1));  might need an emergency reverse
+
+    xboxController1.x().and(xboxController1.y()).onTrue(shootWaitIntake(ShooterConstants.shootPowerFULL, 0.5, IntakeConstants.defaultIntakePower));
 
     //Shooter controller
     xboxController2.y().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerFULL, true));
@@ -137,6 +162,15 @@ public class RobotContainer {
     } else {
       return 25;
     }
+  }
+
+  public Command shootWaitIntake(double shootPower, double waitTime, double intakePower) {
+    return Commands.sequence(
+      new SetShooter(m_shooter, shootPower, false),
+      new WaitCommand(waitTime),
+      new SetIntake(m_intake, intakePower),
+      new SetThroat(m_throat, 1)
+    );
   }
 
   public void turnOffAllMotors() {
