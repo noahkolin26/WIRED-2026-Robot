@@ -118,7 +118,7 @@ public final class Constants {
     public static final String kCameraName = "cameraName";
     public static final Transform3d kRobotToCamera =
       new Transform3d(
-        new Translation3d(0.25, 0.0, 0.30), // forward left up in meters from the center of the robot
+        new Translation3d(0.32, -0.1, 0.30), // forward left up in meters from the center of the robot
         new Rotation3d(0.0, 0.0, 0.0)
       );
     

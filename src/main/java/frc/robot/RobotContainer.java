@@ -134,7 +134,7 @@ public class RobotContainer {
 
     xboxController2.pov(0).whileTrue(new DynamicRunShooter(m_shooter, m_limelightVision.getStableDistanceSupplier(hubAprilTag())));
 
-    xboxController2.rightBumper().onTrue(new SetThroat(m_throat,1.0));
+    xboxController2.rightBumper().onTrue(new SetThroat(m_throat,1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 20));
     xboxController2.leftBumper().onTrue(new SetThroat(m_throat,0.0));
 
     //throat button on controller 2 for testing

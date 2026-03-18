@@ -25,6 +25,7 @@ public class Shooter extends SubsystemBase {
 
   private double currentSpeed = 0.0;
   private double actualSpeed = 0.0;
+  private double currentRPS = 0.0;
     
   public Shooter() {
     shootMotor = new TalonFX(ShooterConstants.kShooterPort, CANBus.roboRIO());
@@ -50,6 +51,14 @@ public class Shooter extends SubsystemBase {
     return currentSpeed;
   }
 
+  public double getActualSpeed() {
+    return actualSpeed;
+  }
+
+  public double getCurrentRPS() {
+    return currentRPS;
+  }
+
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
    *
@@ -63,9 +72,11 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    actualSpeed = shootMotor.getDutyCycle().getValueAsDouble();
+    currentRPS = shootMotor.getVelocity().getValueAsDouble();
+    actualSpeed = currentRPS / 106;
     Telemetry.putBoolean("Shooter Near Power?", Math.abs(currentSpeed - actualSpeed) < 0.1);
     Telemetry.putDouble("Actual Shooter Speed", actualSpeed);
+    Telemetry.putDouble("Current Shooter RPS", currentRPS);
   }
 
     @Override

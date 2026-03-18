@@ -7,19 +7,31 @@
         {
           "type": "named",
           "data": {
-            "name": "Start Shooter"
+            "name": "shooterShort"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left of Ball Field"
+            "pathName": "HubC to Short Shoot"
           }
         },
         {
           "type": "wait",
           "data": {
             "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "throatFull"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeDefault"
           }
         }
       ]
