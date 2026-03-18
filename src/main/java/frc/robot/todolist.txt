@@ -16,7 +16,7 @@ To-do List (last updated 3/17):
         [*] Set Intake at Various Powers
         [*] Set Shooter at Various Powers
         [*] Set Throat at Various Powers
-    [ ] PathPlanner paths initialized (make sure to have variation between sides)
-        [ ] Moving forward and shooting
-        [ ] Shoot > NZ > Shoot
+    [*] PathPlanner paths initialized (make sure to have variation between sides)
+        [*] Moving forward and shooting
+        [*] Shoot > NZ > Shoot
         [ ] Shoot > NZ > Shoot > start going back to NZ

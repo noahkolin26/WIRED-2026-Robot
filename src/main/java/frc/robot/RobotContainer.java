@@ -134,6 +134,7 @@ public class RobotContainer {
 
     xboxController2.pov(0).whileTrue(new DynamicRunShooter(m_shooter, m_limelightVision.getStableDistanceSupplier(hubAprilTag())));
 
+    // TODO: make sure this 20 rps threshold is working, the sensors are reading accurately, etc. Otherwise this will stop the throat from being activated by the driver
     xboxController2.rightBumper().onTrue(new SetThroat(m_throat,1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 20));
     xboxController2.leftBumper().onTrue(new SetThroat(m_throat,0.0));
 
