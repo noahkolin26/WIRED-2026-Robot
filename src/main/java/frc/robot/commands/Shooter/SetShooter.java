@@ -29,11 +29,6 @@ public class SetShooter extends Command {
   public void initialize() {
      double power = m_power;
 
-    if (m_undo && m_shooter.getPower() == m_power) {
-      //m_power = 0.0; //can't directly set m_power or else it stays zero forver.
-      power = 0.0;
-    }
-
     m_shooter.setShooter(power);
   }
 

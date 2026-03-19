@@ -26,6 +26,8 @@ public class Shooter extends SubsystemBase {
   private double currentSpeed = 0.0;
   private double actualSpeed = 0.0;
   private double currentRPS = 0.0;
+
+  private int shooterPowerIndex = 0;
     
   public Shooter() {
     shootMotor = new TalonFX(ShooterConstants.kShooterPort, CANBus.roboRIO());
@@ -45,6 +47,26 @@ public class Shooter extends SubsystemBase {
     shootMotor.set(0);
     currentSpeed = 0.0;
     Telemetry.putDouble("Goal Shooter Speed", 0);
+  }
+
+  public void updatePowerFromIndex() {
+    if(shooterPowerIndex == 0) {
+      setShooter(ShooterConstants.shootPowerSHORT);
+    } else if (shooterPowerIndex == 1) {
+      setShooter(ShooterConstants.shootPowerMEDIUM);
+    } else if (shooterPowerIndex == 2) {
+      setShooter(ShooterConstants.shootPowerLONG);
+    } else if (shooterPowerIndex == 3) {
+      setShooter(1.0);
+    }
+  }
+
+  public void advanceIndex() {
+    shooterPowerIndex = (shooterPowerIndex + 1) % 4;
+  }
+
+  public void reverseIndex() {
+    shooterPowerIndex = (shooterPowerIndex - 1 + 4) % 4;
   }
 
   public double getPower() {
@@ -77,6 +99,12 @@ public class Shooter extends SubsystemBase {
     Telemetry.putBoolean("Shooter Near Power?", Math.abs(currentSpeed - actualSpeed) < 0.1);
     Telemetry.putDouble("Actual Shooter Speed", actualSpeed);
     Telemetry.putDouble("Current Shooter RPS", currentRPS);
+    
+    Telemetry.putBoolean("Shooter Off", currentSpeed == 0);
+    Telemetry.putBoolean("Shooter Short", currentSpeed == ShooterConstants.shootPowerSHORT);
+    Telemetry.putBoolean("Shooter Medium", currentSpeed == ShooterConstants.shootPowerMEDIUM);
+    Telemetry.putBoolean("Shooter Long", currentSpeed == ShooterConstants.shootPowerLONG);
+    Telemetry.putBoolean("Shooter Full", currentSpeed == 1);
   }
 
     @Override
