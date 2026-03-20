@@ -61,7 +61,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "StartEnd at Short Shoot",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -90.0

@@ -82,6 +82,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("throatOff", new SetThroat(m_throat, 0.0));
     NamedCommands.registerCommand("throatFull", new SetThroat(m_throat, 1.0));
     NamedCommands.registerCommand("throatReverse", new SetThroat(m_throat, -1.0));
+    NamedCommands.registerCommand("throatFullWaitForShooter", new SetThroat(m_throat, 1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 40));
 
     m_driveSubsystem.setDefaultCommand(
       new GeneralizedMecanumDrive(

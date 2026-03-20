@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5579605263157896,
-        "y": 3.9676864035087718
+        "x": 2.057916666666667,
+        "y": 6.285197368421052
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7698414488799026,
-        "y": 4.100375795147215
+        "x": 2.6553387890247633,
+        "y": 6.823646834719445
       },
       "isLocked": false,
-      "linkedName": "Short Shoot"
+      "linkedName": "Medium L Shoot"
     },
     {
       "anchor": {
-        "x": 3.1733991228070177,
-        "y": 7.246820175438597
+        "x": 3.286624293785311,
+        "y": 7.340169491525423
       },
       "prevControl": {
-        "x": 2.330914437109594,
-        "y": 6.66082867454771
+        "x": 2.714650750124198,
+        "y": 6.987345066838556
       },
       "nextControl": {
-        "x": 3.8891249302348623,
-        "y": 7.744644346300278
+        "x": 3.62612794273727,
+        "y": 7.549593827577473
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 7.227587719298246
       },
       "prevControl": {
-        "x": 6.705868578093921,
-        "y": 7.15474306528213
+        "x": 6.8186055178453255,
+        "y": 7.211807338234424
       },
       "nextControl": null,
       "isLocked": false,
@@ -61,10 +61,10 @@
     "rotation": -90.0
   },
   "reversed": false,
-  "folder": "StartEnd at Short Shoot",
+  "folder": "StartEnd At Medium L Shoot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -41.054813770962376
   },
   "useDefaultConstraints": true
 }

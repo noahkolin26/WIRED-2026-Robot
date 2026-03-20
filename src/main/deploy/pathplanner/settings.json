@@ -3,7 +3,11 @@
   "robotLength": 0.8382,
   "holonomicMode": true,
   "pathFolders": [
-    "Neutral Zone"
+    "Neutral Zone",
+    "StartEnd At Medium L Shoot",
+    "StartEnd At Hub",
+    "StartEnd at Bump L",
+    "StartEnd at Short Shoot"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,
