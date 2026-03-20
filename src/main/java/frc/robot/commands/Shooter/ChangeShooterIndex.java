@@ -1,10 +1,10 @@
 package frc.robot.commands.Shooter;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import frc.robot.subsystems.Shooter;
 
-public class ChangeShooterIndex extends Command {
+public class ChangeShooterIndex extends InstantCommand {
     private final Shooter m_shooter;
     private boolean m_increment;
 

@@ -128,9 +128,9 @@ public class RobotContainer {
     xboxController2.leftTrigger().whileTrue(new SetThroat(m_throat, 1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 40));
     xboxController2.rightTrigger().whileTrue(new SetThroat(m_throat, -1.0));
 
-    xboxController2.x().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerSHORT, false));
-    xboxController2.y().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerMEDIUM, false));
-    xboxController2.a().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerLONG, false));
+    xboxController2.a().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerSHORT, false));
+    xboxController2.x().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerMEDIUM, false));
+    xboxController2.y().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerLONG, false));
 
     //throat button on controller 2 for testing
     // xboxController2.a().onTrue(new SetThroat(m_throat,1.0));
