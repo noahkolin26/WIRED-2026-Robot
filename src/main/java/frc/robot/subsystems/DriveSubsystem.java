@@ -149,10 +149,10 @@ public class DriveSubsystem extends SubsystemBase {
     // wheel distances from center of robot (meters)
     kinematics =
       new MecanumDriveKinematics(
-          new Translation2d(0.3,  0.3),  // Front Left
-          new Translation2d(0.3, -0.3),  // Front Right
-          new Translation2d(-0.3,  0.3), // Back Left
-          new Translation2d(-0.3, -0.3)  // Back Right
+          new Translation2d(0.273,  0.273),  // Front Left
+          new Translation2d(0.273, -0.273),  // Front Right
+          new Translation2d(-0.273,  0.273), // Back Left
+          new Translation2d(-0.273, -0.273)  // Back Right
       );
 
     gyro = new AHRS(AHRS.NavXComType.kMXP_SPI, AHRS.NavXUpdateRate.k50Hz);
@@ -249,6 +249,7 @@ public class DriveSubsystem extends SubsystemBase {
         getWheelPositions(),
         pose
     );
+    poseEstimator.resetPose(pose);
     frontLeftPID.reset();
     frontRightPID.reset();
     backLeftPID.reset();
@@ -314,6 +315,8 @@ public class DriveSubsystem extends SubsystemBase {
         getHeading(),
         getWheelPositions()
     );
+
+    poseEstimator.update(getHeading(), getWheelPositions());
 
     Pose2d visionPose = limelightVision.getEstimatedPose();
 

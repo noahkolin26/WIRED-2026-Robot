@@ -7,7 +7,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class DynamicRunShooter extends Command {
+public class DynamicSetShooter extends Command {
   private final Shooter m_shooter;
   private final DoubleSupplier m_distance;
 
@@ -18,7 +18,7 @@ public class DynamicRunShooter extends Command {
    * @param shooter The shooter subsystem used by this command.
    * @param distance The distance supplier used by this command.
    */
-  public DynamicRunShooter(Shooter shooter, DoubleSupplier distance) {
+  public DynamicSetShooter(Shooter shooter, DoubleSupplier distance) {
     m_shooter = shooter;
     m_distance = distance;
     
@@ -42,7 +42,7 @@ public class DynamicRunShooter extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.setShooter(0);
+    
   }
 
   // given distance from the target in meters, return the estimated power
