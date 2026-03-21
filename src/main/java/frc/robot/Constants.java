@@ -71,7 +71,7 @@ public final class Constants {
       new Translation2d(-0.273, 0.273),
       new Translation2d(0.273, 0.273),
       new Translation2d(-0.273, -0.273),
-      new Translation2d(0.273, -0.273);
+      new Translation2d(0.273, -0.273));
 
     public static final Transform2d kShootFromTag =
       new Transform2d(
