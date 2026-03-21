@@ -106,9 +106,9 @@ public final class Constants {
       {175, 0.6},
       {190, 0.7}
     };
-    public static final double shootPowerSHORT = 0.5;
-    public static final double shootPowerMEDIUM = 0.6;
-    public static final double shootPowerLONG = 0.7;
+    public static final double shootPowerSHORT = 0.6;
+    public static final double shootPowerMEDIUM = 0.7;
+    public static final double shootPowerLONG = 0.8;
     public static final double shootPowerFULL = 1;
 
     public static final LinearInterpolator shootPowerLirp = new LinearInterpolator(distancePowerPairs);

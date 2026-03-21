@@ -40,6 +40,9 @@ public class Shooter extends SubsystemBase {
   public void setShooter(double speed) {
     shootMotor.set(speed);
     currentSpeed = speed;
+    if(speed == 0) {
+      shooterPowerIndex = 0;
+    }
     Telemetry.putDouble("Goal Shooter Speed", speed);
   }
 
