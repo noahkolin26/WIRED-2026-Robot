@@ -21,9 +21,6 @@ public class GeneralizedMecanumDrive extends Command {
   private DoubleSupplier m_rot;
   private BooleanSupplier m_isFieldRelative;
 
-  private final SlewRateLimiter translationSlewRateLimiter = new SlewRateLimiter(0.7);
-  private final SlewRateLimiter rotationSlewRateLimiter = new SlewRateLimiter(0.7);
-
   /**
    * Creates a new ExampleCommand.
    *
@@ -46,15 +43,10 @@ public class GeneralizedMecanumDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double limitedXSpeed = translationSlewRateLimiter.calculate(m_xSpeed.getAsDouble());
-    double limitedYSpeed = translationSlewRateLimiter.calculate(m_ySpeed.getAsDouble());
-    double limitedRot = rotationSlewRateLimiter.calculate(m_rot.getAsDouble());
-    
-
     if(m_isFieldRelative.getAsBoolean()) {
-        m_driveSubsystem.driveFieldRelative(limitedXSpeed*5, limitedYSpeed*5, limitedRot*5);
+        m_driveSubsystem.driveFieldRelative(m_xSpeed.getAsDouble()*3, m_ySpeed.getAsDouble()*3, m_rot.getAsDouble()*3);
     } else {
-        m_driveSubsystem.mecanumDrive(limitedXSpeed*5, limitedYSpeed*5, limitedRot*5);
+        m_driveSubsystem.mecanumDrive(m_xSpeed.getAsDouble()*3, m_ySpeed.getAsDouble()*3, m_rot.getAsDouble()*3);
     }
   }
 
