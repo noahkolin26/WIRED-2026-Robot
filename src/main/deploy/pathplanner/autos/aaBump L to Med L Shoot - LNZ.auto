@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterMedium"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bump L to Medium L Shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "throatFull"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeDefault"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "throatOff"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Medium L Shoot - LNZ"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
