@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.596513157894737,
-        "y": 5.515899122807017
+        "x": 7.693026315789474,
+        "y": 7.227587719298246
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.4330372807017544,
-        "y": 5.054320175438596
+        "x": 7.347627118644068,
+        "y": 7.442655367231639
       },
       "isLocked": false,
-      "linkedName": "BumpL"
+      "linkedName": "L>"
     },
     {
       "anchor": {
-        "x": 2.5579605263157896,
-        "y": 3.9676864035087718
+        "x": 3.286624293785311,
+        "y": 7.340169491525423
       },
       "prevControl": {
-        "x": 2.6925877192982455,
-        "y": 4.47734649122807
+        "x": 3.765155697210159,
+        "y": 7.4651851569225585
+      },
+      "nextControl": {
+        "x": 3.029067060785615,
+        "y": 7.272883021649348
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.057916666666667,
+        "y": 6.285197368421052
+      },
+      "prevControl": {
+        "x": 2.2233333333333336,
+        "y": 6.609957627118645
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Short Shoot"
+      "linkedName": "D"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -41.054813770962376
   },
   "reversed": false,
-  "folder": "StartEnd at Bump L",
+  "folder": "Start at L",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

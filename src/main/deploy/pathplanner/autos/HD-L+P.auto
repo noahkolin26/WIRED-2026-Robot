@@ -7,7 +7,13 @@
         {
           "type": "named",
           "data": {
-            "name": "shooterShort"
+            "name": "shooterMedium"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HD"
           }
         },
         {
@@ -17,15 +23,27 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "HubC to Short Shoot"
+            "name": "intakeDefault"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "throatFull"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 7.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "throatReverse"
           }
         },
         {
@@ -35,39 +53,15 @@
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 1.0
+            "pathName": "DL"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Short Shoot - L Trench - LNZ"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "throatOff"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LNZ-RNZ Full Speed"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RNZ - R Trench - Short Shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "throatFull"
+            "pathName": "LP"
           }
         }
       ]

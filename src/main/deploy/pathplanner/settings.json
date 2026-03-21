@@ -4,10 +4,12 @@
   "holonomicMode": true,
   "pathFolders": [
     "Neutral Zone",
-    "StartEnd At Medium L Shoot",
-    "StartEnd At Hub",
-    "StartEnd at Bump L",
-    "StartEnd at Short Shoot"
+    "Start at L",
+    "Start at D",
+    "Start at E",
+    "Start at H",
+    "Start at I",
+    "Start at N"
   ],
   "autoFolders": [],
   "defaultMaxVel": 4.0,

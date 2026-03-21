@@ -13,13 +13,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Bump L to Medium L Shoot"
+            "pathName": "HD"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 2.0
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 7.0
           }
         },
         {
@@ -49,25 +49,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Medium L Shoot - LNZ"
+            "pathName": "DL"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LNZ-CNZ"
+            "pathName": "LP"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CNZ-LNZ Reverse"
+            "pathName": "PL Reverse"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LNZ - Medium L Shoot"
+            "pathName": "LD"
           }
         },
         {
@@ -79,7 +79,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 10.0
           }
         },
         {
@@ -91,7 +91,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Medium L Shoot - LNZ"
+            "pathName": "DL"
           }
         }
       ]

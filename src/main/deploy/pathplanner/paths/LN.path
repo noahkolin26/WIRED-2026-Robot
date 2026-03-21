@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.057916666666667,
-        "y": 6.285197368421052
+        "x": 7.693026315789474,
+        "y": 7.227587719298246
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6553387890247633,
-        "y": 6.823646834719445
+        "x": 7.688385277685391,
+        "y": 6.002315140337568
       },
       "isLocked": false,
-      "linkedName": "Medium L Shoot"
-    },
-    {
-      "anchor": {
-        "x": 3.286624293785311,
-        "y": 7.340169491525423
-      },
-      "prevControl": {
-        "x": 2.714650750124198,
-        "y": 6.987345066838556
-      },
-      "nextControl": {
-        "x": 3.62612794273727,
-        "y": 7.549593827577473
-      },
-      "isLocked": false,
-      "linkedName": null
+      "linkedName": "L>"
     },
     {
       "anchor": {
         "x": 7.693026315789474,
-        "y": 7.227587719298246
+        "y": 0.8616447368421052
       },
       "prevControl": {
-        "x": 6.8186055178453255,
-        "y": 7.211807338234424
+        "x": 7.6938516415566065,
+        "y": 1.5646564997568913
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LNZ"
+      "linkedName": ">N"
     }
   ],
   "rotationTargets": [],
@@ -61,10 +45,10 @@
     "rotation": -90.0
   },
   "reversed": false,
-  "folder": "StartEnd At Medium L Shoot",
+  "folder": "Neutral Zone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -41.054813770962376
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

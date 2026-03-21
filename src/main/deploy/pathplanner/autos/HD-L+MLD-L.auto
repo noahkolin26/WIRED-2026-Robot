@@ -1,0 +1,103 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterMedium"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HD"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "throatFull"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "throatReverse"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeDefault"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LM"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ML Reverse"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LD"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "throatFull"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "throatReverse"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DL"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

@@ -3,32 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5579605263157896,
-        "y": 3.9676864035087718
+        "x": 7.693026315789474,
+        "y": 5.482612994350283
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7698414488799026,
-        "y": 4.100375795147215
+        "x": 7.693026315789474,
+        "y": 5.159356016759754
       },
       "isLocked": false,
-      "linkedName": "Short Shoot"
-    },
-    {
-      "anchor": {
-        "x": 3.1733991228070177,
-        "y": 7.246820175438597
-      },
-      "prevControl": {
-        "x": 2.330914437109594,
-        "y": 6.66082867454771
-      },
-      "nextControl": {
-        "x": 3.8891249302348623,
-        "y": 7.744644346300278
-      },
-      "isLocked": false,
-      "linkedName": null
+      "linkedName": "(L)>P"
     },
     {
       "anchor": {
@@ -36,12 +20,12 @@
         "y": 7.227587719298246
       },
       "prevControl": {
-        "x": 6.705868578093921,
-        "y": 7.15474306528213
+        "x": 7.693026315789474,
+        "y": 7.522235020444143
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LNZ"
+      "linkedName": "L>"
     }
   ],
   "rotationTargets": [],
@@ -61,10 +45,10 @@
     "rotation": -90.0
   },
   "reversed": false,
-  "folder": "StartEnd at Short Shoot",
+  "folder": "Neutral Zone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }
