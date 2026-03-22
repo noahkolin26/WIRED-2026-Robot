@@ -299,7 +299,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetToCenterOfHub(boolean isRed) {
       gyro.reset();
-      resetPose(getHubFrontPose(isRed));
+      simGyro.reset();
+      //resetPose(getHubFrontPose(isRed));
     }
 
   public ChassisSpeeds getCurrentSpeeds() {
