@@ -23,33 +23,47 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "intakeDefault"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "throatFull"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeDefault"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "throatFull"
+                }
+              }
+            ]
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 7.0
+            "waitTime": 5.0
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "throatReverse"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeDefault"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "throatReverse"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeDefault"
+                }
+              }
+            ]
           }
         },
         {

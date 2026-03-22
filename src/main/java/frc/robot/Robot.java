@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import java.util.Optional;
+import frc.robot.util.Telemetry;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -96,7 +97,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    Telemetry.putBoolean("Field relative?", m_robotContainer.fieldRelative);
+  }
 
   @Override
   public void testInit() {

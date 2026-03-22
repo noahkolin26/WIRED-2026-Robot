@@ -23,15 +23,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "throatFull"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeDefault"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "throatFull"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeDefault"
+                }
+              }
+            ]
           }
         }
       ]

@@ -59,7 +59,7 @@ public class RobotContainer {
   private final CommandXboxController xboxController2 =
       new CommandXboxController(OperatorConstants.kShooterControllerPort);
 
-  private boolean fieldRelative = true;
+  public boolean fieldRelative = true;
 
   public RobotContainer() {
     m_limelightVision.setDrive(m_driveSubsystem);
@@ -119,8 +119,10 @@ public class RobotContainer {
     xboxController1.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
     xboxController1.rightBumper().whileTrue(new VisionHeadingAssist(m_driveSubsystem, m_limelightVision, hubAprilTag(), () -> -getDriverLeftY(), () -> -getDriverLeftX()));
 
-    xboxController1.b().onTrue(Commands.parallel(new SetIntake(m_intake, IntakeConstants.defaultIntakePower), new SetThroat(m_throat, -1.0)));
-    xboxController1.a().onTrue(Commands.parallel(new SetIntake(m_intake, 0.0), new SetThroat(m_throat, 0.0)));
+    xboxController1.b().onTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
+    xboxController1.a().onTrue(new SetIntake(m_intake, 0.0));
+    // xboxController1.b().onTrue(Commands.parallel(new SetIntake(m_intake, IntakeConstants.defaultIntakePower), new SetThroat(m_throat, -1.0)));
+    // xboxController1.a().onTrue(Commands.parallel(new SetIntake(m_intake, 0.0), new SetThroat(m_throat, 0.0)));
 
     // Shooter controller part 2
     xboxController2.leftBumper().onTrue(new ChangeShooterIndex(m_shooter, false).withTimeout(0.2));
@@ -128,7 +130,8 @@ public class RobotContainer {
     xboxController2.b().onTrue(new SetShooter(m_shooter, 0.0, false));
 
     xboxController2.leftTrigger().whileTrue(new SetThroat(m_throat, 1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 40));
-    xboxController2.rightTrigger().whileTrue(new SetThroat(m_throat, -1.0));
+    xboxController2.leftTrigger().onFalse(new SetThroat(m_throat, -1.0));
+    //xboxController2.rightTrigger().whileTrue(new SetThroat(m_throat, -1.0));
 
     xboxController2.x().whileTrue(new DynamicSetShooter(m_shooter, m_limelightVision.getStableDistanceSupplier(hubAprilTag())));
 
