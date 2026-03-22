@@ -59,3 +59,6 @@ For commit #4?
     the problem with trying to read the alliance color while the simulator is working is because the alliance color is read at the
         start of "disabled", so toggling back and forth enough between disabled/enabled in the sim seems enough to clear up the problem.
     of course, the alliance logic hasn't been tested with the real driver station or the field yet so be careful
+
+commit #5: why have autonomouses when you could have autonomice
+    there are now some "shake" paths for the shooting locations that aren't in the autos yet so we can double check we want them

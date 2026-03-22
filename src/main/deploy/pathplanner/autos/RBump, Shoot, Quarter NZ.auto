@@ -1,0 +1,73 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterMedium"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "JF"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "throatFull"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeDefault"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "throatReverse"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FN"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NQ"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "QN Reverse"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
