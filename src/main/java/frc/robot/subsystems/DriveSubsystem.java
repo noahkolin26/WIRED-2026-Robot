@@ -290,7 +290,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   // found these values in sim (GPT screwed up lol), + and - are for 1/2 robot length (should only be x-axis)
   public Pose2d getHubFrontPose(boolean isRed) {
-    if(!isRed) {
+    if(isRed) {
       return new Pose2d(12.94, 4.02, new Rotation2d(3.14159)); // x + 0.4275
     } else {
       return new Pose2d(3.50, 4.02, new Rotation2d(0)); // x - 0.4275

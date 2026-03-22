@@ -1,0 +1,61 @@
+/*
+ * commit message "early" 3/22
+ * > Problem: PathPlanner keeps getting "hung up" on certain parts of the autonomous
+ * > Suspicion: The first command doesn't finish running so it can't move onto the next one, hence why Parallel works
+ * > Testing:
+ *      *Assuming* that the Simulator "accurately" depicts robot movements and that the motors will move as Elastic pretends...
+ *      - Changing all the commands to InstantCommands (runs within one scheduler loop and finishes) made the autonomous finish (don't know what it did before though in the sim)
+ *      - But the value of the "throat" motor isn't changing
+ * > GPT:
+ *      - now, instead of setting the motor via a method, FOR THIS SUBSYSTEM ONLY SO FAR we store the GoalSpeed as a static variable.
+ *      - every run of the scheduler, it continuously sets the motor to whatever GoalSpeed is
+ *      - this supposedly makes it easy to set the goalSpeed separately via different commands?
+ * > Results:
+ *      - so apparently the SetThroatInstant command was automatically setting it back to 0 when it ended
+ *      - I REMOVED THAT FROM BOTH THROAT COMMANDS, THE THROAT WON'T STOP UNTIL YOU SPECIFICALLY TELL IT TO GO TO ZERO
+ *      - according to the telemetry in Elastic, this correctly works for that one autonomous at least
+ *      - so if we don't crash into anything the HD-L+MLD-L auto (Soon to be renamed) will shoot medium, go NZ to get some, shoot, then sit by NZ?? (cool if true)
+ */
+
+ /*
+ * commit "early no 2" on 3/22
+ * 
+ * > Problem: The robot probably doesn't know where it is, and maybe the driver doesn't either.
+ * > Suspicion: We can fix this through odometry! Forget about vision for now because I don't happen to have a camera on me.
+ * > Testing:
+ *    - PathPlanner is trying to reset the simPose but it isn't working because the simPose can't (Couldn't) be reset
+ *    - LimelightVision gives the "DistanceToTag" (robotPose versus tagPose) and "StableDistanceSupplier":
+ *          the odometry distance is actually based on the vision-odometry movement because it just does the Pythagorean thm on the robot pose and the tag
+ *          idk if the vision is updating the robot pose at all so it *should* just be odometry
+ *          I think the direct "Vision" version and the measurements it incorporates into "Fused"/"StableDistanceSupplier" are
+ *            based on seeing the tag and using that directly, not just on vision measurements in general
+ *          But the "StableDistanceSupplier" uses some 8 'taps' (?) in its moving average, so the value it was reporting was
+ *            1/8 of the odometry. the odometry is in meters, or it should be based on field measurements I found
+ * > GPT:
+ *    - The hub is located in the center of the field (thanks)
+ *    - Let's not use that
+ * > Solution:
+ *     - Now the sim pose will also reset so autonomouses look correct on the simulator
+ *     - IMPORTANT: (Tested in sim) If the robot runs into the center of the front of the hub and the driver holds both triggers for 1.5 seconds, the
+ *        robot pose *should* reset to being slammed into the center of the front of the hub. The gyro didn't look like it needed to be reset
+ *        but I put the code in there anyway, as a separate line so it is easy to remove
+ *     - So now we can have half decent odometry for aligning to the hub (??) or setting the shooter based on lirp
+ *          ^^^^ NOT YET IMPLEMENTED as of this commit (#2)
+ *     - getStableOdomDistanceSupplier() or whatever it's called in LimelightVision returns the distance to the relevant tag in meters
+ *        (hopefully)
+ *  > note: the simulator gui will let you set the alliance station, but the first time you enable it the code doesn't always seem to
+ *    catch it, so disable/disconnect and "enable"(teleop) it once or twice and it should fix it
+ */
+
+ commit #3 was after a series of failed attempts to do what's described below
+
+For commit #4?
+    so apparently the whole "read the alliance color" thing is more messed up than I thought
+    > the x button on controller 2, when held, now adjusts the shooter speed to *where* it is on the field, see above notes about
+        resetting the position
+    the linear interpolator now takes pairs in terms of meters and power (I adjusted the original data), but we need further out data points
+        if we want it to be accurate and not act weird at large or small distances. also may be asymmetrical because only the distance 
+        to one tag is being used right now
+    the problem with trying to read the alliance color while the simulator is working is because the alliance color is read at the
+        start of "disabled", so toggling back and forth enough between disabled/enabled in the sim seems enough to clear up the problem.
+    of course, the alliance logic hasn't been tested with the real driver station or the field yet so be careful

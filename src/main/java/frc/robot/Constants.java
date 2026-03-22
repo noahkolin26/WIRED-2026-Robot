@@ -100,11 +100,11 @@ public final class Constants {
 
     public static final double defaultShooterPower = 0.5;
 
-    // keep experimental results here so lirp is easy to update
+    // keep experimental results here so lirp is easy to update - CHANGED to be in METERS
     public static final double[][] distancePowerPairs = {
-      {115, 0.5}, // in inches
-      {175, 0.6},
-      {190, 0.7}
+      {2.921, 0.5},  //{115, 0.5}, // in inches
+      {4.445, 0.6},  //{175, 0.6},
+      {4.826, 0.7}   //{190, 0.7}
     };
     public static final double shootPowerSHORT = 0.6;
     public static final double shootPowerMEDIUM = 0.7;

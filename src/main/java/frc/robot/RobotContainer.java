@@ -137,7 +137,7 @@ public class RobotContainer {
     xboxController2.leftTrigger().onFalse(new SetThroat(m_throat, -1.0));
     //xboxController2.rightTrigger().whileTrue(new SetThroat(m_throat, -1.0));
 
-    xboxController2.x().whileTrue(new DynamicSetShooter(m_shooter, m_limelightVision.getStableDistanceSupplier(hubAprilTag())));
+    xboxController2.x().whileTrue(new RunShooter(m_shooter, () -> m_limelightVision.idealShootPower()));
 
     //throat button on controller 2 for testing
     // xboxController2.a().onTrue(new SetThroat(m_throat,1.0));
