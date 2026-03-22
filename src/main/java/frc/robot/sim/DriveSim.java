@@ -79,6 +79,11 @@ public class DriveSim {
     return pose;
   }
 
+  // experimental
+  public void resetPose(Pose2d newPose) {
+    pose = newPose;
+  }
+
   /** Call from DriveSubsystem.simulationPeriodic() */
   public void update() {
     final double dt = Constants.DriveConstants.kDtSeconds;

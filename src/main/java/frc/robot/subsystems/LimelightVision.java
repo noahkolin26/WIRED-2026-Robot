@@ -88,6 +88,9 @@ public class LimelightVision extends SubsystemBase {
         distancePublisher.set(
             getStableDistanceSupplier(hubAprilTag).getAsDouble()
         );
+
+        Telemetry.putDouble("? stable distance to tag", getStableDistanceSupplier(hubAprilTag).getAsDouble());
+        Telemetry.putDouble("? odom distance to tag", getDistanceToTag(hubAprilTag).orElse(-1.0));
     }
 
     public Optional<Double> getDirectDistanceToTag(int tagID) {
@@ -172,6 +175,39 @@ public class LimelightVision extends SubsystemBase {
         return () -> {
 
             Optional<Double> distanceOpt = getFusedDistanceToTag(tagID);
+
+            if (distanceOpt.isPresent()) {
+
+                double raw = distanceOpt.get();
+
+                // Remove spikes
+                double despiked = spikeFilter.calculate(raw);
+
+                // Smooth normal jitter
+                double smoothed = smoothingFilter.calculate(despiked);
+
+                lastValue[0] = smoothed;
+                hasValue[0] = true;
+            }
+
+            if (hasValue[0]) {
+                return lastValue[0];
+            }
+
+            return 0.0;
+    };
+}
+
+    public DoubleSupplier getStableOdomDistanceSupplier(int tagID) {
+        MedianFilter spikeFilter = new MedianFilter(5);
+        LinearFilter smoothingFilter = LinearFilter.movingAverage(8);
+
+        final double[] lastValue = {0.0};
+        final boolean[] hasValue = {false};
+
+        return () -> {
+
+            Optional<Double> distanceOpt = getDistanceToTag(tagID);
 
             if (distanceOpt.isPresent()) {
 

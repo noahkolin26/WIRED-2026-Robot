@@ -41,15 +41,13 @@ public class Shooter extends SubsystemBase {
     shootMotor.set(speed);
     currentSpeed = speed;
     if(speed == 0) {
-      shooterPowerIndex = 0;
+      shooterPowerIndex = -1;
     }
-    Telemetry.putDouble("Goal Shooter Speed", speed);
   }
 
   public void stopShooter() {
     shootMotor.set(0);
     currentSpeed = 0.0;
-    Telemetry.putDouble("Goal Shooter Speed", 0);
   }
 
   public void updatePowerFromIndex() {
@@ -61,6 +59,8 @@ public class Shooter extends SubsystemBase {
       setShooter(ShooterConstants.shootPowerLONG);
     } else if (shooterPowerIndex == 3) {
       setShooter(1.0);
+    } else {
+      setShooter(ShooterConstants.shootPowerSHORT);
     }
   }
 
@@ -100,6 +100,7 @@ public class Shooter extends SubsystemBase {
     currentRPS = shootMotor.getVelocity().getValueAsDouble();
     actualSpeed = currentRPS / 106;
     Telemetry.putBoolean("Shooter Near Power?", Math.abs(currentSpeed - actualSpeed) < 0.1);
+    Telemetry.putDouble("Goal Shooter Power", currentSpeed);
     Telemetry.putDouble("Actual Shooter Speed", actualSpeed);
     Telemetry.putDouble("Current Shooter RPS", currentRPS);
     

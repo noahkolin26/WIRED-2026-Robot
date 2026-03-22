@@ -4,6 +4,36 @@
 
 package frc.robot.subsystems;
 
+/*
+ * commit "early no 2" on 3/22
+ * 
+ * > Problem: The robot probably doesn't know where it is, and maybe the driver doesn't either.
+ * > Suspicion: We can fix this through odometry! Forget about vision for now because I don't happen to have a camera on me.
+ * > Testing:
+ *    - PathPlanner is trying to reset the simPose but it isn't working because the simPose can't (Couldn't) be reset
+ *    - LimelightVision gives the "DistanceToTag" (robotPose versus tagPose) and "StableDistanceSupplier":
+ *          the odometry distance is actually based on the vision-odometry movement because it just does the Pythagorean thm on the robot pose and the tag
+ *          idk if the vision is updating the robot pose at all so it *should* just be odometry
+ *          I think the direct "Vision" version and the measurements it incorporates into "Fused"/"StableDistanceSupplier" are
+ *            based on seeing the tag and using that directly, not just on vision measurements in general
+ *          But the "StableDistanceSupplier" uses some 8 'taps' (?) in its moving average, so the value it was reporting was
+ *            1/8 of the odometry. the odometry is in meters, or it should be based on field measurements I found
+ * > GPT:
+ *    - The hub is located in the center of the field (thanks)
+ *    - Let's not use that
+ * > Solution:
+ *     - Now the sim pose will also reset so autonomouses look correct on the simulator
+ *     - IMPORTANT: (Tested in sim) If the robot runs into the center of the front of the hub and the driver holds both triggers for 1.5 seconds, the
+ *        robot pose *should* reset to being slammed into the center of the front of the hub. The gyro didn't look like it needed to be reset
+ *        but I put the code in there anyway, as a separate line so it is easy to remove
+ *     - So now we can have half decent odometry for aligning to the hub (??) or setting the shooter based on lirp
+ *          ^^^^ NOT YET IMPLEMENTED as of this commit (#2)
+ *     - getStableOdomDistanceSupplier() or whatever it's called in LimelightVision returns the distance to the relevant tag in meters
+ *        (hopefully)
+ *  > note: the simulator gui will let you set the alliance station, but the first time you enable it the code doesn't always seem to
+ *    catch it, so disable/disconnect and "enable"(teleop) it once or twice and it should fix it
+ */
+
 import frc.robot.util.Telemetry;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -249,12 +279,28 @@ public class DriveSubsystem extends SubsystemBase {
         getWheelPositions(),
         pose
     );
+    // next line new, trying to do auton tests etc in sim
+    sim.resetPose(pose);
     poseEstimator.resetPose(pose);
     frontLeftPID.reset();
     frontRightPID.reset();
     backLeftPID.reset();
     backRightPID.reset();
   }
+
+  // found these values in sim (GPT screwed up lol), + and - are for 1/2 robot length (should only be x-axis)
+  public Pose2d getHubFrontPose(boolean isRed) {
+    if(!isRed) {
+      return new Pose2d(12.94, 4.02, new Rotation2d(3.14159)); // x + 0.4275
+    } else {
+      return new Pose2d(3.50, 4.02, new Rotation2d(0)); // x - 0.4275
+    }
+  }
+
+  public void resetToCenterOfHub(boolean isRed) {
+      gyro.reset();
+      resetPose(getHubFrontPose(isRed));
+    }
 
   public ChassisSpeeds getCurrentSpeeds() {
     return kinematics.toChassisSpeeds(
@@ -330,6 +376,9 @@ public class DriveSubsystem extends SubsystemBase {
     // Display pose if in sim; otherwise you'll want to do real odometry here.
     if (RobotBase.isSimulation() && sim != null) {
       field.setRobotPose(sim.getPose());
+      Telemetry.putDouble("simPoseX", getPose().getX());
+      Telemetry.putDouble("simPoseY", getPose().getY());
+      Telemetry.putDouble("simPoseRot", getPose().getRotation().getRotations());
     }
 
     if (RobotBase.isReal()) {

@@ -59,7 +59,8 @@ public class RobotContainer {
   private final CommandXboxController xboxController2 =
       new CommandXboxController(OperatorConstants.kShooterControllerPort);
 
-  public boolean fieldRelative = true;
+      // this was bothering me too so now the default is false
+  public boolean fieldRelative = false;
 
   public RobotContainer() {
     m_limelightVision.setDrive(m_driveSubsystem);
@@ -118,6 +119,9 @@ public class RobotContainer {
     // Driver controller part 2
     xboxController1.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
     xboxController1.rightBumper().whileTrue(new VisionHeadingAssist(m_driveSubsystem, m_limelightVision, hubAprilTag(), () -> -getDriverLeftY(), () -> -getDriverLeftX()));
+
+    Trigger bothDriverTriggers = new Trigger(() -> ((xboxController1.getLeftTriggerAxis() > 0.5) && (xboxController1.getRightTriggerAxis() > 0.5))).debounce(1.5);
+    bothDriverTriggers.onTrue(Commands.runOnce(() -> m_driveSubsystem.resetToCenterOfHub(isRedAlliance)));
 
     xboxController1.b().onTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
     xboxController1.a().onTrue(new SetIntake(m_intake, 0.0));
