@@ -6,6 +6,7 @@ import frc.robot.util.Telemetry;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShooterConstants;
 
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.filter.LinearFilter;
@@ -89,8 +90,12 @@ public class LimelightVision extends SubsystemBase {
             getStableDistanceSupplier(hubAprilTag).getAsDouble()
         );
 
-        Telemetry.putDouble("? stable distance to tag", getStableDistanceSupplier(hubAprilTag).getAsDouble());
-        Telemetry.putDouble("? odom distance to tag", getDistanceToTag(hubAprilTag).orElse(-1.0));
+        Telemetry.putDouble("? odom distance to tag", getStableOdomDistanceSupplier(hubAprilTag).getAsDouble());
+        Telemetry.putDouble("? ideal shoot power", ShooterConstants.shootPowerLirp.getInterpolatedValue(getStableOdomDistanceSupplier(hubAprilTag).getAsDouble()));
+    }
+
+    public double idealShootPower() {
+        return ShooterConstants.shootPowerLirp.getInterpolatedValue(getStableOdomDistanceSupplier(RobotContainer.isRedAlliance ? 9 : 25).getAsDouble());
     }
 
     public Optional<Double> getDirectDistanceToTag(int tagID) {
@@ -200,7 +205,7 @@ public class LimelightVision extends SubsystemBase {
 
     public DoubleSupplier getStableOdomDistanceSupplier(int tagID) {
         MedianFilter spikeFilter = new MedianFilter(5);
-        LinearFilter smoothingFilter = LinearFilter.movingAverage(8);
+        LinearFilter smoothingFilter = LinearFilter.movingAverage(1);
 
         final double[] lastValue = {0.0};
         final boolean[] hasValue = {false};
