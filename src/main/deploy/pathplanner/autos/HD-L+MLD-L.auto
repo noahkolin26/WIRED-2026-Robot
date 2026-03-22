@@ -29,6 +29,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intakeDefault"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 3.0
@@ -38,12 +44,6 @@
           "type": "named",
           "data": {
             "name": "throatReverse"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeDefault"
           }
         },
         {

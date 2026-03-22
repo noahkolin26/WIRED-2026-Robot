@@ -67,23 +67,23 @@ public class RobotContainer {
     configureBindings();
 
     // Shooting power (off, short, medium, long, full)
-    NamedCommands.registerCommand("shooterOff", new SetShooter(m_shooter, 0.0, false));
-    NamedCommands.registerCommand("shooterShort", new SetShooter(m_shooter, ShooterConstants.shootPowerSHORT, false));
-    NamedCommands.registerCommand("shooterMedium", new SetShooter(m_shooter, ShooterConstants.shootPowerMEDIUM, false));
-    NamedCommands.registerCommand("shooterLong", new SetShooter(m_shooter, ShooterConstants.shootPowerLONG, false));
-    NamedCommands.registerCommand("shooterFull", new SetShooter(m_shooter, ShooterConstants.shootPowerFULL, false));
+    NamedCommands.registerCommand("shooterOff", new SetShooterInstant(m_shooter, 0.0));
+    NamedCommands.registerCommand("shooterShort", new SetShooterInstant(m_shooter, ShooterConstants.shootPowerSHORT));
+    NamedCommands.registerCommand("shooterMedium", new SetShooterInstant(m_shooter, ShooterConstants.shootPowerMEDIUM));
+    NamedCommands.registerCommand("shooterLong", new SetShooterInstant(m_shooter, ShooterConstants.shootPowerLONG));
+    NamedCommands.registerCommand("shooterFull", new SetShooterInstant(m_shooter, ShooterConstants.shootPowerFULL));
 
     // Intake power (off, default, full, reverse)
-    NamedCommands.registerCommand("intakeOff", new SetIntake(m_intake, 0.0));
-    NamedCommands.registerCommand("intakeDefault", new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
-    NamedCommands.registerCommand("intakeDefaultReverse", new SetIntake(m_intake, IntakeConstants.defaultReverseIntakePower));
-    NamedCommands.registerCommand("intakeFull", new SetIntake(m_intake, 1.0));
+    NamedCommands.registerCommand("intakeOff", new SetIntakeInstant(m_intake, 0.0));
+    NamedCommands.registerCommand("intakeDefault", new SetIntakeInstant(m_intake, IntakeConstants.defaultIntakePower));
+    NamedCommands.registerCommand("intakeDefaultReverse", new SetIntakeInstant(m_intake, IntakeConstants.defaultReverseIntakePower));
+    NamedCommands.registerCommand("intakeFull", new SetIntakeInstant(m_intake, 1.0));
 
     // Throat power (off, full, reverse)
-    NamedCommands.registerCommand("throatOff", new SetThroat(m_throat, 0.0));
-    NamedCommands.registerCommand("throatFull", new SetThroat(m_throat, 1.0));
-    NamedCommands.registerCommand("throatReverse", new SetThroat(m_throat, -1.0));
-    NamedCommands.registerCommand("throatFullWaitForShooter", new SetThroat(m_throat, 1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 40));
+    NamedCommands.registerCommand("throatOff", new SetThroatInstant(m_throat, 0.0));
+    NamedCommands.registerCommand("throatFull", new SetThroatInstant(m_throat, 1.0));
+    NamedCommands.registerCommand("throatReverse", new SetThroatInstant(m_throat, -1.0));
+    NamedCommands.registerCommand("throatFullIfShooter", new SetThroatInstant(m_throat, 1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 40));
 
     m_driveSubsystem.setDefaultCommand(
       new GeneralizedMecanumDrive(

@@ -2,15 +2,15 @@ package frc.robot.commands.Throat;
 
 //import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import frc.robot.subsystems.Throat;
 
-public class SetThroat extends Command {
+public class SetThroatInstant extends InstantCommand {
     private final Throat m_throat;
     private double m_speed;
 
-    public SetThroat(Throat throat, double speed) {
+    public SetThroatInstant(Throat throat, double speed) {
         m_throat = throat;
         addRequirements(m_throat);
         
@@ -29,6 +29,6 @@ public class SetThroat extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        // WARNING: IT IS NOW IMPOSSIBLE TO STOP THE THROAT WITHOUT DIRECTLY SETTING IT TO ZERO
+        
     }
 }
