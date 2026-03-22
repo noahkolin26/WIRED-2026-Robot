@@ -280,7 +280,7 @@ public class DriveSubsystem extends SubsystemBase {
         pose
     );
     // next line new, trying to do auton tests etc in sim
-    sim.resetPose(pose);
+    //sim.resetPose(pose);
     poseEstimator.resetPose(pose);
     frontLeftPID.reset();
     frontRightPID.reset();
@@ -299,7 +299,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetToCenterOfHub(boolean isRed) {
       gyro.reset();
-      simGyro.reset();
+      //simGyro.reset();
       //resetPose(getHubFrontPose(isRed));
     }
 
