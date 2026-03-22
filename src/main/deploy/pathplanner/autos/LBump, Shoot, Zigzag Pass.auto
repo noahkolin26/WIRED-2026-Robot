@@ -35,12 +35,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "throatReverse"
-          }
-        },
-        {
           "type": "wait",
           "data": {
             "waitTime": 5.0
