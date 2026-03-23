@@ -75,6 +75,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 
 import com.studica.frc.AHRS;
 
@@ -279,7 +280,10 @@ public class DriveSubsystem extends SubsystemBase {
         getWheelPositions(),
         pose
     );
-    // next line new, trying to do auton tests etc in sim
+    // next line new, trying to do auton tests etc in sim - shouldn't break real autos
+    if(RobotBase.isSimulation()) {
+      sim.resetPose(pose);
+    }
     //sim.resetPose(pose);
     poseEstimator.resetPose(pose);
     frontLeftPID.reset();
@@ -299,7 +303,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetToCenterOfHub(boolean isRed) {
       gyro.reset();
-      //simGyro.reset();
+      if(RobotBase.isSimulation()) {
+        simGyro.reset();
+      }
       //resetPose(getHubFrontPose(isRed));
     }
 
