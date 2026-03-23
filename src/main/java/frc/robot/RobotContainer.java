@@ -86,6 +86,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("throatReverse", new SetThroatInstant(m_throat, -1.0));
     NamedCommands.registerCommand("throatFullIfShooter", new SetThroatInstant(m_throat, 1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 40));
 
+    // Wait for the shooter to reach a certain speed, values in RPS and not checked, not in PathPlanner yet
+    NamedCommands.registerCommand("waitForShooterShort", new WaitForShooter(m_shooter, 50.0));
+    NamedCommands.registerCommand("waitForShooterMedium", new WaitForShooter(m_shooter, 60.0));
+    NamedCommands.registerCommand("waitForShooterLong", new WaitForShooter(m_shooter, 70.0));
+    NamedCommands.registerCommand("waitForShooterFull", new WaitForShooter(m_shooter, 80.0));
+
     m_driveSubsystem.setDefaultCommand(
       new GeneralizedMecanumDrive(
         m_driveSubsystem,
@@ -116,7 +122,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    // Driver controller part 2
+    // Driver controller
     xboxController1.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
     xboxController1.rightBumper().whileTrue(new VisionHeadingAssist(m_driveSubsystem, m_limelightVision, hubAprilTag(), () -> -getDriverLeftY(), () -> -getDriverLeftX()));
 
@@ -125,24 +131,17 @@ public class RobotContainer {
 
     xboxController1.b().onTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
     xboxController1.a().onTrue(new SetIntake(m_intake, 0.0));
-    // xboxController1.b().onTrue(Commands.parallel(new SetIntake(m_intake, IntakeConstants.defaultIntakePower), new SetThroat(m_throat, -1.0)));
-    // xboxController1.a().onTrue(Commands.parallel(new SetIntake(m_intake, 0.0), new SetThroat(m_throat, 0.0)));
 
-    // Shooter controller part 2
+    // Shooter controller
     xboxController2.leftBumper().onTrue(new ChangeShooterIndex(m_shooter, false).withTimeout(0.2));
     xboxController2.rightBumper().onTrue(new ChangeShooterIndex(m_shooter, true).withTimeout(0.2));
     xboxController2.b().onTrue(new SetShooter(m_shooter, 0.0, false));
 
-    xboxController2.leftTrigger().whileTrue(new SetThroat(m_throat, 1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 40));
-    xboxController2.leftTrigger().onFalse(new SetThroat(m_throat, -1.0));
-    //xboxController2.rightTrigger().whileTrue(new SetThroat(m_throat, -1.0));
+    // if breaking: change "onTrue" to "whileTrue" and "whileFalse" to "onFalse" (what it was before)
+    xboxController2.leftTrigger().onTrue(new SetThroat(m_throat, 1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 40));
+    xboxController2.leftTrigger().whileFalse(new SetThroat(m_throat, -1.0));
 
     xboxController2.x().whileTrue(new RunShooter(m_shooter, () -> m_limelightVision.idealShootPower()));
-
-    //throat button on controller 2 for testing
-    // xboxController2.a().onTrue(new SetThroat(m_throat,1.0));
-    // xboxController2.b().onTrue(new SetThroat(m_throat, -1.0));
-    // xboxController2.y().onTrue(new SetThroat(m_throat,0.0));
   }
 
   DoubleSupplier constantOn = () -> 1.0;
