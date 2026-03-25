@@ -11,10 +11,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.RelativeEncoder;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 
 // https://www.chiefdelphi.com/t/open-source-shoot-on-the-move-sotm-solver-ball-physics-sim-3-java-files-drop-in/516109
 
@@ -31,10 +30,14 @@ public class Shooter extends SubsystemBase {
     
   public Shooter() {
     shootMotor = new TalonFX(ShooterConstants.kShooterPort, CANBus.roboRIO());
-    MotorOutputConfigs config = new MotorOutputConfigs();
-    config
-      .withInverted(InvertedValue.Clockwise_Positive)
-      .withNeutralMode(NeutralModeValue.Brake);
+    /* Here is where you can set the current limits (TODO: Tune the actual current limit values)
+    TalonFXConfigurator configurator = shootMotor.getConfigurator();
+    CurrentLimitsConfigs currentConfigs = new CurrentLimitsConfigs();
+    currentConfigs.StatorCurrentLimitEnable = true;
+    currentConfigs.StatorCurrentLimit = 10.0;
+    currentConfigs.SupplyCurrentLimitEnable = true;
+    currentConfigs.SupplyCurrentLimit = 10.0;
+    */
   }
 
   public void setShooter(double speed) {
@@ -70,6 +73,10 @@ public class Shooter extends SubsystemBase {
 
   public void reverseIndex() {
     shooterPowerIndex = (shooterPowerIndex - 1 + 4) % 4;
+  }
+
+  public void resetIndex() {
+    shooterPowerIndex = -1;
   }
 
   public double getPower() {

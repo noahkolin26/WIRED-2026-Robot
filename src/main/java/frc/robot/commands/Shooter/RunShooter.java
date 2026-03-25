@@ -29,6 +29,6 @@ public class RunShooter extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        m_shooter.setShooter(0.0);
+        //m_shooter.setShooter(0.0);
     }
 }

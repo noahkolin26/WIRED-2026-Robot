@@ -42,7 +42,7 @@ public class DynamicSetShooter extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+    m_shooter.resetIndex();
   }
 
   // given distance from the target in meters, return the estimated power

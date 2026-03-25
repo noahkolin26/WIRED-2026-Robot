@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.AimingConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -142,6 +143,8 @@ public class RobotContainer {
     xboxController2.leftTrigger().whileFalse(new SetThroat(m_throat, -1.0));
 
     xboxController2.x().whileTrue(new RunShooter(m_shooter, () -> m_limelightVision.idealShootPower()));
+    //xboxController2.y().onTrue(new DriveToPose(m_driveSubsystem, AimingConstants.shootPoseTest));
+    //xboxController2.a().whileTrue(new AimAtTarget(m_driveSubsystem, AimingConstants.redHubLocation));
   }
 
   DoubleSupplier constantOn = () -> 1.0;

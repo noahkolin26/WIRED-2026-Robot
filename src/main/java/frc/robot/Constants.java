@@ -8,10 +8,12 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Matrix;
@@ -112,6 +114,13 @@ public final class Constants {
     public static final double shootPowerFULL = 1;
 
     public static final LinearInterpolator shootPowerLirp = new LinearInterpolator(distancePowerPairs);
+  }
+
+  public static class AimingConstants {
+    public static final Pose2d redHubLocation = new Pose2d(11.909, 4.054, new Rotation2d(0));
+    public static final Pose2d blueHubLocation = new Pose2d(4.587, 4.054, new Rotation2d(0));
+
+    public static final Pose2d shootPoseTest = new Pose2d(12.57, 7.52, new Rotation2d(-1.758));
   }
 
   public static class VisionConstants {
