@@ -1,0 +1,85 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "throatReverse"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeDefault"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shooterLong"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "throatFull"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "throatReverse"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "R Trench, NZ"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NQ"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "QN Reverse"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NZ, R Trench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "throatFull"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

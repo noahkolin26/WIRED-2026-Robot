@@ -20,54 +20,32 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 import java.util.List;
 
-public class DriveToPose extends Command {
+public class TranslateRobot extends Command {
     private final DriveSubsystem drive;
-    private final Pose2d targetPose;
+    private double distance;
+    private boolean vertical;
     private Command pathCommand = Commands.none(); // safe default
 
-    public DriveToPose(DriveSubsystem drive, Pose2d targetPose) {
+    public TranslateRobot(DriveSubsystem drive, double distance, boolean vertical) {
         this.drive = drive;
-        this.targetPose = targetPose;
+        this.distance = distance;
+        this.vertical = vertical;
         addRequirements(drive);
-    }
-
-    public DriveToPose(DriveSubsystem drive, double distance, boolean vertical) {
-        this.drive = drive;
-        Pose2d translatedPose = drive.getPose();
-        Transform2d transform = new Transform2d(vertical ? 0 : distance, vertical ? distance : 0, translatedPose.getRotation());
-        this.targetPose = translatedPose.plus(transform);
     }
 
     @Override
     public void initialize() {
         Pose2d currentPose = drive.getPose();
-
-        Translation2d delta = targetPose.getTranslation().minus(currentPose.getTranslation());
-        if (delta.getNorm() < 0.01) {
-            // Close enough — no path needed, just stop
-            pathCommand = Commands.none();
-            return;
-        }
-
-        // PathPlanner needs valid (non-zero) Rotation2d objects.
-        // new Rotation2d(0) gives cos=1, sin=0 — always valid.
-        Rotation2d startRot = currentPose.getRotation();
-        System.out.println("Current rotation: " + startRot.getDegrees());
-        Rotation2d endRot = targetPose.getRotation();
-        System.out.println("Target rotation: " + endRot.getDegrees());
+        Translation2d transform = new Translation2d(vertical ? 0 : distance, vertical ? distance : 0);
 
         List<PathPoint> points = List.of(
-            new PathPoint(currentPose.getTranslation(), new RotationTarget(0.0, startRot)),
-            new PathPoint(targetPose.getTranslation(), new RotationTarget(1.0, endRot))
+            new PathPoint(currentPose.getTranslation(), new RotationTarget(0.0, currentPose.getRotation())),
+            new PathPoint(currentPose.getTranslation().plus(transform), new RotationTarget(1.0, currentPose.getRotation()))
         );
 
         PathConstraints constraints = new PathConstraints(3.0, 3.0, 6.28, 6.28);
 
-        PathPlannerPath path = PathPlannerPath.fromPathPoints(
-            points,
-            constraints,
-            new GoalEndState(0.0, targetPose.getRotation())
-        );
+        PathPlannerPath path = PathPlannerPath.fromPathPoints(points, constraints, new GoalEndState(0.0, currentPose.getRotation()));
 
         path.preventFlipping = true;
 
