@@ -20,37 +20,47 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 import java.util.List;
 
-public class TranslateRobot extends Command {
+public class SnapToShoot extends Command {
     private final DriveSubsystem drive;
-    private double distance;
-    private boolean vertical;
+    private final boolean isRedAlliance;
     private Command pathCommand = Commands.none(); // safe default
 
-    public TranslateRobot(DriveSubsystem drive, double distance, boolean vertical) {
+    public SnapToShoot(DriveSubsystem drive, boolean isRed) {
         this.drive = drive;
-        this.distance = distance;
-        this.vertical = vertical;
+        this.isRedAlliance = isRed;
         addRequirements(drive);
     }
 
     @Override
     public void initialize() {
         Pose2d currentPose = drive.getPose();
-        Translation2d transform = new Translation2d(vertical ? 0 : distance, vertical ? distance : 0);
+
+        /*
+        // PathPlanner needs valid (non-zero) Rotation2d objects.
+        // new Rotation2d(0) gives cos=1, sin=0 — always valid.
+        Rotation2d startRot = currentPose.getRotation();
+        System.out.println("Current rotation: " + startRot.getDegrees());
+        Rotation2d endRot = targetPose.getRotation();
+        System.out.println("Target rotation: " + endRot.getDegrees());
 
         List<PathPoint> points = List.of(
-            new PathPoint(currentPose.getTranslation(), new RotationTarget(0.0, currentPose.getRotation())),
-            new PathPoint(currentPose.getTranslation().plus(transform), new RotationTarget(1.0, currentPose.getRotation()))
+            new PathPoint(currentPose.getTranslation(), new RotationTarget(0.0, startRot)),
+            new PathPoint(targetPose.getTranslation(), new RotationTarget(1.0, endRot))
         );
 
         PathConstraints constraints = new PathConstraints(3.0, 3.0, 6.28, 6.28);
 
-        PathPlannerPath path = PathPlannerPath.fromPathPoints(points, constraints, new GoalEndState(0.0, currentPose.getRotation()));
+        PathPlannerPath path = PathPlannerPath.fromPathPoints(
+            points,
+            constraints,
+            new GoalEndState(0.0, targetPose.getRotation())
+        );
 
         path.preventFlipping = true;
 
         pathCommand = AutoBuilder.followPath(path);
         pathCommand.initialize(); // must be called before execute()
+        */
     }
 
     @Override
@@ -68,4 +78,14 @@ public class TranslateRobot extends Command {
         pathCommand.end(interrupted);
         drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     }
+
+    /*
+    public Pose2d getFirstPoint() {
+        
+    }
+
+    public Pose2d getSecondPoint() {
+
+    }
+    */
 }

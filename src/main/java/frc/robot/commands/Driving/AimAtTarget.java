@@ -12,7 +12,7 @@ import edu.wpi.first.math.controller.PIDController;
 public class AimAtTarget extends Command {
     private final DriveSubsystem drive;
     private final Pose2d target;
-    private final PIDController rotationController = new PIDController(3.0, 0.0, 0.1);
+    private final PIDController rotationController = new PIDController(5.0, 0.0, 0.1);
 
     public AimAtTarget(DriveSubsystem drive, Pose2d target) {
         this.drive = drive;

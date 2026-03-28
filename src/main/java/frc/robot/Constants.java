@@ -120,7 +120,14 @@ public final class Constants {
     public static final Pose2d redHubLocation = new Pose2d(11.909, 4.054, new Rotation2d(0));
     public static final Pose2d blueHubLocation = new Pose2d(4.587, 4.054, new Rotation2d(0));
 
-    public static final Pose2d shootPoseTest = new Pose2d(12.57, 7.52, new Rotation2d(-1.758));
+    public static final Pose2d blueLeftShoot = new Pose2d(4, 7.4, new Rotation2d(-Math.PI/2));
+    public static final Pose2d blueRightShoot = new Pose2d(4, 0.67, new Rotation2d(Math.PI/2));
+    public static final Pose2d blueLeftTrench = new Pose2d(5.16, 7.4, new Rotation2d(-Math.PI/2));
+    public static final Pose2d blueRightTrench = new Pose2d(5.16, 0.67, new Rotation2d(Math.PI/2));
+    public static final Pose2d redLeftShoot = new Pose2d(12.5, 0.67, new Rotation2d(Math.PI/2));
+    public static final Pose2d redRightShoot = new Pose2d(12.5, 7.4, new Rotation2d(-Math.PI/2));
+    public static final Pose2d redLeftTrench = new Pose2d(11.37, 0.67, new Rotation2d(Math.PI/2));
+    public static final Pose2d redRightTrench = new Pose2d(11.37, 7.4, new Rotation2d(-Math.PI/2));
   }
 
   public static class VisionConstants {
