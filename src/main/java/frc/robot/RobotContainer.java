@@ -143,8 +143,30 @@ public class RobotContainer {
     xboxController2.leftTrigger().whileFalse(new SetThroat(m_throat, -1.0));
 
     xboxController2.x().whileTrue(new RunShooter(m_shooter, () -> m_limelightVision.idealShootPower()));
-    //xboxController2.y().onTrue(new SnapToShoot(m_driveSubsystem, isRedAlliance));
-    //xboxController2.a().whileTrue(new AimAtTarget(m_driveSubsystem, AimingConstants.redHubLocation));
+
+    /*
+    ONE CONTROLLER BINDINGS (must comment out above for this to work)
+    xboxController1.leftBumper()
+      .onTrue(new ChangeShooterIndex(m_shooter, false).withTimeout(0.2));
+    xboxController1.rightBumper()
+      .onTrue(new ChangeShooterIndex(m_shooter, true).withTimeout(0.2));
+
+    xboxController1.leftTrigger()
+      .onTrue(new SetThroat(m_throat, 1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 40));
+      .whileFalse(new SetThroat(m_throat, -1.0));
+
+    xboxController1.rightTrigger()
+      .whileTrue(new RunShooter(m_shooter, () -> m_limelightVision.idealShootPower()));
+
+    xboxController1.a().debounce(0.1).multiPress(3, 0.5)
+      .onTrue(new SnapToShoot(m_driveSubsystem, isRedAlliance, () -> driverIsTryingToDrive())); // should be able to regain control by moving driver sticks
+    xboxController1.x().debounce(0.1).multiPress(3, 0.5)
+      .onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
+    xboxController1.y()
+      .whileTrue(new AimAtTarget(m_driveSubsystem, isRedAlliance ? AimingConstants.redHubLocation : AimingConstants.blueHubLocation));
+    xboxController2.b().debounce(0.5)
+      .onTrue(new SetShooter(m_shooter, 0.0, false));
+      */
   }
 
   DoubleSupplier constantOn = () -> 1.0;
@@ -207,6 +229,10 @@ public class RobotContainer {
 
   public double getDriverRightX() {
     return xboxController1.getRightX();
+  }
+
+  public boolean driverIsTryingToDrive() {
+    return (getDriverLeftX() > 0.25 || getDriverLeftY() > 0.25 || getDriverRightX() > 0.25 || getDriverRightY() > 0.25);
   }
 
   public double getLeftTrigger() {

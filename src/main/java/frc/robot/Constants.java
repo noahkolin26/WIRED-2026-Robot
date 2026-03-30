@@ -21,6 +21,9 @@ import edu.wpi.first.math.numbers.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -128,6 +131,11 @@ public final class Constants {
     public static final Pose2d redRightShoot = new Pose2d(12.5, 7.4, new Rotation2d(-Math.PI/2));
     public static final Pose2d redLeftTrench = new Pose2d(11.37, 0.67, new Rotation2d(Math.PI/2));
     public static final Pose2d redRightTrench = new Pose2d(11.37, 7.4, new Rotation2d(-Math.PI/2));
+
+    public static final ArrayList<Pose2d> redFirstPoints = new ArrayList<>(List.of(redLeftShoot, redRightShoot, redLeftTrench, redRightTrench));
+    public static final ArrayList<Pose2d> redSecondPoints = new ArrayList<>(List.of(redLeftShoot, redRightShoot));
+    public static final ArrayList<Pose2d> blueFirstPoints = new ArrayList<>(List.of(blueLeftShoot, blueRightShoot, blueLeftTrench, blueRightTrench));
+    public static final ArrayList<Pose2d> blueSecondPoints = new ArrayList<>(List.of(blueLeftShoot, blueRightShoot));
   }
 
   public static class VisionConstants {

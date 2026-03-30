@@ -1,5 +1,6 @@
 package frc.robot.commands.Driving;
 
+import frc.robot.Constants.AimingConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -13,54 +14,47 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 public class SnapToShoot extends Command {
     private final DriveSubsystem drive;
     private final boolean isRedAlliance;
     private Command pathCommand = Commands.none(); // safe default
 
-    public SnapToShoot(DriveSubsystem drive, boolean isRed) {
+    private final Pose2d currentPose;
+    private final Pose2d firstPoint;
+    private final Pose2d secondPoint;
+    private final BooleanSupplier booleanSupplier;
+
+    public SnapToShoot(DriveSubsystem drive, boolean isRed, BooleanSupplier booleanSupplier) {
         this.drive = drive;
         this.isRedAlliance = isRed;
         addRequirements(drive);
+
+        currentPose = drive.getPose();
+        firstPoint = getFirstPoint(currentPose);
+        secondPoint = getSecondPoint(firstPoint);
+        this.booleanSupplier = booleanSupplier;
     }
 
     @Override
     public void initialize() {
-        Pose2d currentPose = drive.getPose();
-
-        /*
+        
         // PathPlanner needs valid (non-zero) Rotation2d objects.
         // new Rotation2d(0) gives cos=1, sin=0 — always valid.
-        Rotation2d startRot = currentPose.getRotation();
-        System.out.println("Current rotation: " + startRot.getDegrees());
-        Rotation2d endRot = targetPose.getRotation();
-        System.out.println("Target rotation: " + endRot.getDegrees());
-
-        List<PathPoint> points = List.of(
-            new PathPoint(currentPose.getTranslation(), new RotationTarget(0.0, startRot)),
-            new PathPoint(targetPose.getTranslation(), new RotationTarget(1.0, endRot))
-        );
 
         PathConstraints constraints = new PathConstraints(3.0, 3.0, 6.28, 6.28);
 
-        PathPlannerPath path = PathPlannerPath.fromPathPoints(
-            points,
+        pathCommand = AutoBuilder.pathfindToPose(
+            secondPoint,
             constraints,
-            new GoalEndState(0.0, targetPose.getRotation())
-        );
+            0.0
+        ).until(booleanSupplier);
 
-        path.preventFlipping = true;
-
-        pathCommand = AutoBuilder.followPath(path);
         pathCommand.initialize(); // must be called before execute()
-        */
     }
 
     @Override
@@ -78,14 +72,20 @@ public class SnapToShoot extends Command {
         pathCommand.end(interrupted);
         drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     }
-
-    /*
-    public Pose2d getFirstPoint() {
-        
+    
+    public Pose2d getFirstPoint(Pose2d pose) {
+        if(isRedAlliance) {
+            return pose.nearest(AimingConstants.redFirstPoints);
+        } else {
+            return pose.nearest(AimingConstants.blueFirstPoints);
+        }
     }
 
-    public Pose2d getSecondPoint() {
-
+    public Pose2d getSecondPoint(Pose2d firstPose) {
+        if(isRedAlliance) {
+            return firstPose.nearest(AimingConstants.redSecondPoints);
+        } else {
+            return firstPose.nearest(AimingConstants.blueSecondPoints);
+        }
     }
-    */
 }
