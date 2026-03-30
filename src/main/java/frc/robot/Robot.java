@@ -141,6 +141,12 @@ public class Robot extends TimedRobot {
       case Blue -> redInactiveFirst;
     };
 
+    if(alliance.get().equals(Alliance.Red)) {
+      RobotContainer.isRedAlliance = true;
+    } else {
+      RobotContainer.isRedAlliance = false;
+    }
+
     if (matchTime > 130) {
       // Transition shift, hub is active.
       return true;

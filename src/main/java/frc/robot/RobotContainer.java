@@ -122,7 +122,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-
+    
     // Driver controller
     xboxController1.leftBumper().onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
     xboxController1.rightBumper().whileTrue(new VisionHeadingAssist(m_driveSubsystem, m_limelightVision, hubAprilTag(), () -> -getDriverLeftY(), () -> -getDriverLeftX()));
@@ -145,22 +145,23 @@ public class RobotContainer {
     xboxController2.x().whileTrue(new RunShooter(m_shooter, () -> m_limelightVision.idealShootPower()));
 
     /*
-    ONE CONTROLLER BINDINGS (must comment out above for this to work)
+    // ONE CONTROLLER BINDINGS (must comment out above for this to work)
     xboxController1.leftBumper()
       .onTrue(new ChangeShooterIndex(m_shooter, false).withTimeout(0.2));
     xboxController1.rightBumper()
       .onTrue(new ChangeShooterIndex(m_shooter, true).withTimeout(0.2));
 
     xboxController1.leftTrigger()
-      .onTrue(new SetThroat(m_throat, 1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 40));
-      .whileFalse(new SetThroat(m_throat, -1.0));
+      .onTrue(new SetThroat(m_throat, 1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 40))
+      .whileFalse(new SetThroat(m_throat, -1.0))
+      .whileFalse(new SetIntake(m_intake, 1.0));
 
     xboxController1.rightTrigger()
       .whileTrue(new RunShooter(m_shooter, () -> m_limelightVision.idealShootPower()));
 
-    xboxController1.a().debounce(0.1).multiPress(3, 0.5)
+    xboxController1.a().debounce(0.03).multiPress(3, 0.5)
       .onTrue(new SnapToShoot(m_driveSubsystem, isRedAlliance, () -> driverIsTryingToDrive())); // should be able to regain control by moving driver sticks
-    xboxController1.x().debounce(0.1).multiPress(3, 0.5)
+    xboxController1.x().debounce(0.03).multiPress(3, 0.5)
       .onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
     xboxController1.y()
       .whileTrue(new AimAtTarget(m_driveSubsystem, isRedAlliance ? AimingConstants.redHubLocation : AimingConstants.blueHubLocation));

@@ -24,10 +24,10 @@ public class SnapToShoot extends Command {
     private final boolean isRedAlliance;
     private Command pathCommand = Commands.none(); // safe default
 
-    private final Pose2d currentPose;
-    private final Pose2d firstPoint;
-    private final Pose2d secondPoint;
-    private final BooleanSupplier booleanSupplier;
+    private Pose2d currentPose;
+    private Pose2d firstPoint;
+    private Pose2d secondPoint;
+    private BooleanSupplier booleanSupplier;
 
     public SnapToShoot(DriveSubsystem drive, boolean isRed, BooleanSupplier booleanSupplier) {
         this.drive = drive;
@@ -42,6 +42,7 @@ public class SnapToShoot extends Command {
 
     @Override
     public void initialize() {
+        currentPose = drive.getPose();
         
         // PathPlanner needs valid (non-zero) Rotation2d objects.
         // new Rotation2d(0) gives cos=1, sin=0 — always valid.
