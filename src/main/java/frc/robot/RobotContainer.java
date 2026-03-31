@@ -134,6 +134,7 @@ public class RobotContainer {
 
     xboxController1.b().onTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
     xboxController1.a().onTrue(new SetIntake(m_intake, 0.0));
+    xboxController1.x().onTrue(new SetIntake(m_intake, IntakeConstants.defaultReverseIntakePower));
 
     // Shooter controller
     xboxController2.leftBumper().onTrue(new ChangeShooterIndex(m_shooter, false).withTimeout(0.2));
