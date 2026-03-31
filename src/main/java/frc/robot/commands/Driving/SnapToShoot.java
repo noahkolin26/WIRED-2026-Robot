@@ -15,19 +15,21 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 public class SnapToShoot extends Command {
-    private final DriveSubsystem drive;
-    private final boolean isRedAlliance;
+    private DriveSubsystem drive;
+    private boolean isRedAlliance;
     private Command pathCommand = Commands.none(); // safe default
 
     private Pose2d currentPose;
     private Pose2d firstPoint;
     private Pose2d secondPoint;
-    private BooleanSupplier booleanSupplier;
+    private BooleanSupplier booleanSupplier; // returns true if the command needs to be stopped (e.g. manual takeover)
 
     public SnapToShoot(DriveSubsystem drive, boolean isRed, BooleanSupplier booleanSupplier) {
         this.drive = drive;
@@ -43,6 +45,9 @@ public class SnapToShoot extends Command {
     @Override
     public void initialize() {
         currentPose = drive.getPose();
+        firstPoint = getFirstPoint(currentPose);
+        secondPoint = getSecondPoint(firstPoint);
+        isRedAlliance = isRedAlliance();
         
         // PathPlanner needs valid (non-zero) Rotation2d objects.
         // new Rotation2d(0) gives cos=1, sin=0 — always valid.
@@ -88,5 +93,10 @@ public class SnapToShoot extends Command {
         } else {
             return firstPose.nearest(AimingConstants.blueSecondPoints);
         }
+    }
+
+    public static boolean isRedAlliance() {
+        Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+        return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
     }
 }

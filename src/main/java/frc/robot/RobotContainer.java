@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
 
@@ -64,6 +65,7 @@ public class RobotContainer {
   public boolean fieldRelative = false;
 
   public RobotContainer() {
+    isRedAlliance = isRedAlliance();
     m_limelightVision.setDrive(m_driveSubsystem);
 
     configureBindings();
@@ -128,7 +130,7 @@ public class RobotContainer {
     xboxController1.rightBumper().whileTrue(new VisionHeadingAssist(m_driveSubsystem, m_limelightVision, hubAprilTag(), () -> -getDriverLeftY(), () -> -getDriverLeftX()));
 
     Trigger bothDriverTriggers = new Trigger(() -> ((xboxController1.getLeftTriggerAxis() > 0.5) && (xboxController1.getRightTriggerAxis() > 0.5))).debounce(1.5);
-    bothDriverTriggers.onTrue(Commands.runOnce(() -> m_driveSubsystem.resetToCenterOfHub(isRedAlliance)));
+    bothDriverTriggers.onTrue(Commands.runOnce(() -> m_driveSubsystem.resetToCenterOfHub(isRedAlliance())));
 
     xboxController1.b().onTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
     xboxController1.a().onTrue(new SetIntake(m_intake, 0.0));
@@ -159,12 +161,12 @@ public class RobotContainer {
     xboxController1.rightTrigger()
       .whileTrue(new RunShooter(m_shooter, () -> m_limelightVision.idealShootPower()));
 
-    xboxController1.a().debounce(0.03).multiPress(3, 0.5)
-      .onTrue(new SnapToShoot(m_driveSubsystem, isRedAlliance, () -> driverIsTryingToDrive())); // should be able to regain control by moving driver sticks
-    xboxController1.x().debounce(0.03).multiPress(3, 0.5)
+    xboxController1.a().debounce(0.03).multiPress(2, 0.5)
+      .onTrue(new SnapToShoot(m_driveSubsystem, isRedAlliance(), () -> driverIsTryingToDrive())); // should be able to regain control by moving driver sticks
+    xboxController1.x().debounce(0.03).multiPress(2, 0.5)
       .onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
     xboxController1.y()
-      .whileTrue(new AimAtTarget(m_driveSubsystem, isRedAlliance ? AimingConstants.redHubLocation : AimingConstants.blueHubLocation));
+      .whileTrue(new AimAtTarget(m_driveSubsystem, isRedAlliance() ? AimingConstants.redHubLocation : AimingConstants.blueHubLocation));
     xboxController2.b().debounce(0.5)
       .onTrue(new SetShooter(m_shooter, 0.0, false));
       */
@@ -182,9 +184,14 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
+  public static boolean isRedAlliance() {
+    Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
+  }
+
   // The hub has two AprilTags, this only tracks one of them
   public int hubAprilTag() {
-    if(isRedAlliance) {
+    if(isRedAlliance()) {
       return 9;
     } else {
       return 25;
