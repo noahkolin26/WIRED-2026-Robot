@@ -45,9 +45,9 @@ public class SnapToShoot extends Command {
     @Override
     public void initialize() {
         currentPose = drive.getPose();
+        isRedAlliance = isRedAlliance();
         firstPoint = getFirstPoint(currentPose);
         secondPoint = getSecondPoint(firstPoint);
-        isRedAlliance = isRedAlliance();
         
         // PathPlanner needs valid (non-zero) Rotation2d objects.
         // new Rotation2d(0) gives cos=1, sin=0 — always valid.
@@ -80,7 +80,7 @@ public class SnapToShoot extends Command {
     }
     
     public Pose2d getFirstPoint(Pose2d pose) {
-        if(isRedAlliance) {
+        if(isRedAlliance()) {
             return pose.nearest(AimingConstants.redFirstPoints);
         } else {
             return pose.nearest(AimingConstants.blueFirstPoints);
@@ -88,7 +88,7 @@ public class SnapToShoot extends Command {
     }
 
     public Pose2d getSecondPoint(Pose2d firstPose) {
-        if(isRedAlliance) {
+        if(isRedAlliance()) {
             return firstPose.nearest(AimingConstants.redSecondPoints);
         } else {
             return firstPose.nearest(AimingConstants.blueSecondPoints);
