@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.693026315789474,
-        "y": 0.8616447368421052
+        "x": 3.9912146892655365,
+        "y": 0.832
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.911542792792793,
-        "y": 0.6643918918918926
+        "x": 3.9912146892655365,
+        "y": 1.0932887400468156
       },
       "isLocked": false,
-      "linkedName": "N>"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 0.7042090395480227
       },
       "prevControl": {
-        "x": 4.471270995571842,
-        "y": 0.30586444495342885
+        "x": 4.076650455037212,
+        "y": 0.939157395420132
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "Start Under L Trench",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 88.53119928561408
   },
   "useDefaultConstraints": true
 }

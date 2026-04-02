@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "R Trench Back Up"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "throatReverse"

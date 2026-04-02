@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 4.010777027027027,
-        "y": 7.221756756756756
+        "x": 4.004025423728814,
+        "y": 7.3529802259887
       },
       "prevControl": {
-        "x": 4.613400900900902,
-        "y": 7.722240990990992
+        "x": 4.606649297602689,
+        "y": 7.853464460222936
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -83.08877288097543
   },
   "reversed": false,
   "folder": "Start Under L Trench",

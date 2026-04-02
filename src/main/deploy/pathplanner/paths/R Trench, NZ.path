@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.000563063063064,
-        "y": 0.8278153153153154
+        "x": 3.9912146892655365,
+        "y": 0.7042090395480227
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.3989076576576585,
-        "y": 0.6950337837837843
+        "x": 4.389559283860131,
+        "y": 0.5714275080164917
       },
       "isLocked": false,
       "linkedName": "R Trench"
@@ -64,7 +64,7 @@
   "folder": "Start Under L Trench",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 79.5625246488817
   },
   "useDefaultConstraints": true
 }

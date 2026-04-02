@@ -23,6 +23,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "L Trench Back Up"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 3.0
