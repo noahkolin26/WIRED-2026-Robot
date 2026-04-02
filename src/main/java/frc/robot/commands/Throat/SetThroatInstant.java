@@ -5,6 +5,7 @@ package frc.robot.commands.Throat;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import frc.robot.subsystems.Throat;
+import frc.robot.util.Telemetry;
 
 public class SetThroatInstant extends InstantCommand {
     private final Throat m_throat;
@@ -25,6 +26,13 @@ public class SetThroatInstant extends InstantCommand {
     @Override
     public void execute() {
         m_throat.setThroatPower(m_speed);       //.getAsDouble());
+        if(m_speed > 0.0) {
+            Telemetry.putString("Throat Arrow", "--->");
+        } else if (m_speed < 0.0) {
+            Telemetry.putString("Throat Arrow", "<---");
+        } else {
+            Telemetry.putString("Throat Arrow", "O");
+        }
     }
 
     @Override

@@ -148,7 +148,7 @@ public class RobotContainer {
     xboxController2.x().whileTrue(new RunShooter(m_shooter, () -> m_limelightVision.idealShootPower()));
 
     /*
-    // ONE CONTROLLER BINDINGS (must comment out above for this to work)
+    // TEST BINDINGS (must comment out above for this to work)
     xboxController1.leftBumper()
       .onTrue(new ChangeShooterIndex(m_shooter, false).withTimeout(0.2));
     xboxController1.rightBumper()
@@ -167,10 +167,10 @@ public class RobotContainer {
     xboxController1.x().debounce(0.03).multiPress(2, 0.5)
       .onTrue(Commands.runOnce(() -> fieldRelative = !fieldRelative));
     xboxController1.y()
-      .whileTrue(new AimAtTarget(m_driveSubsystem, isRedAlliance() ? AimingConstants.redHubLocation : AimingConstants.blueHubLocation));
+      .whileTrue(new AimAtTarget(m_driveSubsystem, AimingConstants.redHubLocation, AimingConstants.blueHubLocation));
     xboxController2.b().debounce(0.5)
       .onTrue(new SetShooter(m_shooter, 0.0, false));
-      */
+    */
   }
 
   DoubleSupplier constantOn = () -> 1.0;

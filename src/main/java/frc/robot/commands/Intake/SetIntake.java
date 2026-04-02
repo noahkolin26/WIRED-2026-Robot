@@ -3,6 +3,7 @@ package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.subsystems.Intake;
+import frc.robot.util.Telemetry;
 
 public class SetIntake extends Command {
     private final Intake m_intake;
@@ -23,6 +24,13 @@ public class SetIntake extends Command {
     @Override
     public void execute() {
         m_intake.setIntake(m_speed);
+        if(m_speed > 0.0) {
+            Telemetry.putString("Intake Arrow", "--->");
+        } else if (m_speed < 0.0) {
+            Telemetry.putString("Intake Arrow", "<---");
+        } else {
+            Telemetry.putString("Intake Arrow", "O");
+        }
     }
 
     @Override
