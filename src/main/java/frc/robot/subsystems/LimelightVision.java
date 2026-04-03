@@ -7,7 +7,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
-
+import frc.robot.LimelightHelpers.PoseEstimate;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -67,6 +67,10 @@ public class LimelightVision extends SubsystemBase {
         return null;
     }
 
+    public PoseEstimate getPoseEstimate() {
+        return LimelightHelpers.getBotPoseEstimate_wpiBlue(LIMELIGHT_NAME);
+    }
+
     public boolean hasTargets() {
         return LimelightHelpers.getTV(LIMELIGHT_NAME);
     }
@@ -82,7 +86,7 @@ public class LimelightVision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        int hubAprilTag = RobotContainer.isRedAlliance ? 9 : 25;
+        int hubAprilTag = RobotContainer.isRedAlliance() ? 9 : 25;
         boolean seesTag = seesTag(hubAprilTag);
         seesTagPublisher.set(seesTag);
 
@@ -95,7 +99,7 @@ public class LimelightVision extends SubsystemBase {
     }
 
     public double idealShootPower() {
-        return ShooterConstants.shootPowerLirp.getInterpolatedValue(getStableOdomDistanceSupplier(RobotContainer.isRedAlliance ? 9 : 25).getAsDouble());
+        return ShooterConstants.shootPowerLirp.getInterpolatedValue(getStableOdomDistanceSupplier(RobotContainer.isRedAlliance() ? 9 : 25).getAsDouble());
     }
 
     public Optional<Double> getDirectDistanceToTag(int tagID) {

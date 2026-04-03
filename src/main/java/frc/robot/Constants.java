@@ -73,10 +73,11 @@ public final class Constants {
     public static final double MAX_WHEEL_SPEED = 4.5; // meters/sec
 
     public static final MecanumDriveKinematics kMecanumDriveKinematics = new MecanumDriveKinematics(
-      new Translation2d(-0.273, 0.273),
-      new Translation2d(0.273, 0.273),
-      new Translation2d(-0.273, -0.273),
-      new Translation2d(0.273, -0.273));
+          new Translation2d(0.273,  0.273),  // Front Left
+          new Translation2d(0.273, -0.273),  // Front Right
+          new Translation2d(-0.273,  0.273), // Back Left
+          new Translation2d(-0.273, -0.273)  // Back Right
+      );
 
     public static final Transform2d kShootFromTag =
       new Transform2d(

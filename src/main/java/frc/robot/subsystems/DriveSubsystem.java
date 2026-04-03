@@ -67,6 +67,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.sim.DriveSim;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -179,13 +180,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     // wheel distances from center of robot (meters)
-    kinematics =
-      new MecanumDriveKinematics(
-          new Translation2d(0.273,  0.273),  // Front Left
-          new Translation2d(0.273, -0.273),  // Front Right
-          new Translation2d(-0.273,  0.273), // Back Left
-          new Translation2d(-0.273, -0.273)  // Back Right
-      );
+    kinematics = DriveConstants.kMecanumDriveKinematics;
 
     gyro = new AHRS(AHRS.NavXComType.kMXP_SPI, AHRS.NavXUpdateRate.k50Hz);
     gyro.reset();
@@ -374,12 +369,13 @@ public class DriveSubsystem extends SubsystemBase {
 
     poseEstimator.update(getHeading(), getWheelPositions());
 
-    Pose2d visionPose = limelightVision.getEstimatedPose();
+    PoseEstimate est = limelightVision.getPoseEstimate();
 
-    if (visionPose != null) {
+    if (est != null && est.tagCount > 0) {
         poseEstimator.addVisionMeasurement(
-            visionPose,
-            edu.wpi.first.wpilibj.Timer.getFPGATimestamp()
+            est.pose,
+            est.timestampSeconds,
+            VisionConstants.kVisionStdDevs
         );
     }
 
