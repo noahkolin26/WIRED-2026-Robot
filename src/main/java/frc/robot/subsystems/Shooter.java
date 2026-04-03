@@ -112,6 +112,7 @@ public class Shooter extends SubsystemBase {
     Telemetry.putDouble("Current Shooter RPS", currentRPS);
     
     Telemetry.putBoolean("Shooter Off", currentSpeed == 0);
+    Telemetry.putBoolean("ShooterIdle", currentSpeed == ShooterConstants.shootPowerIDLE);
     Telemetry.putBoolean("Shooter Short", currentSpeed == ShooterConstants.shootPowerSHORT);
     Telemetry.putBoolean("Shooter Medium", currentSpeed == ShooterConstants.shootPowerMEDIUM);
     Telemetry.putBoolean("Shooter Long", currentSpeed == ShooterConstants.shootPowerLONG);

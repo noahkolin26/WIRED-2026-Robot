@@ -17,14 +17,14 @@ import frc.robot.Constants.VisionConstants;
 
 public class Vision extends SubsystemBase {
   private final PhotonCamera camera = new PhotonCamera("OV9281");
-  private final PhotonPoseEstimator poseEstimator;
+  //private final PhotonPoseEstimator poseEstimator;
   private final DriveSubsystem drive;
     
   public Vision(DriveSubsystem drive) {
-    poseEstimator = new PhotonPoseEstimator(
+    /*poseEstimator = new PhotonPoseEstimator(
       VisionConstants.kAprilTagLayout,
       VisionConstants.kRobotToCamera
-    );
+    );*/
 
     this.drive = drive;
   }
@@ -37,8 +37,8 @@ public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
     for (var result : results) {
         if (!result.hasTargets()) continue;
 
-        poseEstimator.setReferencePose(drive.getPose());
-        latestEstimate = poseEstimator.update(result);
+        //poseEstimator.setReferencePose(drive.getPose());
+        //latestEstimate = poseEstimator.update(result);
     }
 
     return latestEstimate;

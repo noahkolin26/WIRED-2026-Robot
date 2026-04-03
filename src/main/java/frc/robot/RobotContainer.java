@@ -152,10 +152,10 @@ public class RobotContainer {
     // Shooter controller
     xboxController2.leftBumper().onTrue(new ChangeShooterIndex(m_shooter, false).withTimeout(0.2));
     xboxController2.rightBumper().onTrue(new ChangeShooterIndex(m_shooter, true).withTimeout(0.2));
-    xboxController2.b().onTrue(new SetShooter(m_shooter, 0.0, false));
+    xboxController2.b().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerIDLE, false));
 
     // if breaking: change "onTrue" to "whileTrue" and "whileFalse" to "onFalse" (what it was before)
-    xboxController2.leftTrigger().onTrue(new SetThroat(m_throat, 1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 40));
+    xboxController2.leftTrigger().onTrue(new SetThroat(m_throat, 1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 30));
     xboxController2.leftTrigger().whileFalse(new SetThroat(m_throat, -1.0));
 
     xboxController2.x().whileTrue(new RunShooter(m_shooter, () -> m_limelightVision.idealShootPower()));
@@ -201,6 +201,11 @@ public class RobotContainer {
   public static boolean isRedAlliance() {
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
     return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
+  }
+
+  public void idleShooterAndThroat() {
+    m_shooter.setShooter(ShooterConstants.shootPowerIDLE);
+    m_throat.setThroatPower(-1.0);
   }
 
   // The hub has two AprilTags, this only tracks one of them

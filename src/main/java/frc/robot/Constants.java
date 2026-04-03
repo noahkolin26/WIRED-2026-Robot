@@ -112,6 +112,8 @@ public final class Constants {
       {4.445, 0.6},  //{175, 0.6},
       {4.826, 0.7}   //{190, 0.7}
     };
+    
+    public static final double shootPowerIDLE = 0.2;
     public static final double shootPowerSHORT = 0.5;
     public static final double shootPowerMEDIUM = 0.58; // used to be 0.6
     public static final double shootPowerLONG = 0.75;
@@ -147,6 +149,7 @@ public final class Constants {
         new Rotation3d(0.0, 0.0, 0.0)
       );
     
+      /*
     public static final AprilTagFieldLayout kAprilTagLayout;
 
     static {
@@ -160,6 +163,7 @@ public final class Constants {
             throw new RuntimeException("Failed to load AprilTag field layout", e);
         }
     }
+        */
 
     // estimated vision error (x=y=0.7m, angle=1rad), tune based on how stable pose looks, could be dynamically adjusted based on number/proximity of tags
     public static final Matrix<N3, N1> kVisionStdDevs = VecBuilder.fill(0.7, 0.7, 1.0);
