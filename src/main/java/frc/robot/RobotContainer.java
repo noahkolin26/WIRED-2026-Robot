@@ -35,6 +35,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.auto.NamedCommands;
+import frc.robot.LimelightHelpers;
 
 import choreo.auto.AutoChooser;
 
@@ -67,6 +68,17 @@ public class RobotContainer {
   public RobotContainer() {
     isRedAlliance = isRedAlliance();
     m_limelightVision.setDrive(m_driveSubsystem);
+    // Tell the Limelight where the camera is mounted on the robot.
+    // Limelight wants: forward, side, up, roll, pitch, yaw
+    LimelightHelpers.setCameraPose_RobotSpace(
+        VisionConstants.kCameraName,
+        VisionConstants.kRobotToCamera.getX(),
+        VisionConstants.kRobotToCamera.getY(),
+        VisionConstants.kRobotToCamera.getZ(),
+        Math.toDegrees(VisionConstants.kRobotToCamera.getRotation().getX()),
+        Math.toDegrees(VisionConstants.kRobotToCamera.getRotation().getY()),
+        Math.toDegrees(VisionConstants.kRobotToCamera.getRotation().getZ())
+    );
 
     configureBindings();
 

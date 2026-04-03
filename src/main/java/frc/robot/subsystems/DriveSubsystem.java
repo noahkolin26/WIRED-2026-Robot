@@ -360,38 +360,58 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    odometry.update(
-        getHeading(),
-        getWheelPositions()
-    );
+public void periodic() {
+  odometry.update(
+      getHeading(),
+      getWheelPositions()
+  );
 
-    poseEstimator.update(getHeading(), getWheelPositions());
+  poseEstimator.update(getHeading(), getWheelPositions());
 
-    PoseEstimate est = limelightVision.getPoseEstimate();
+  PoseEstimate est = limelightVision.getPoseEstimate();
 
-    if (est != null && est.tagCount > 0) {
-        poseEstimator.addVisionMeasurement(
-            est.pose,
-            est.timestampSeconds,
-            VisionConstants.kVisionStdDevs
-        );
-    }
+  boolean acceptedVision = false;
 
-    // Display pose if in sim; otherwise you'll want to do real odometry here.
-    if (RobotBase.isSimulation() && sim != null) {
-      field.setRobotPose(sim.getPose());
-      Telemetry.putDouble("simPoseX", getPose().getX());
-      Telemetry.putDouble("simPoseY", getPose().getY());
-      Telemetry.putDouble("simPoseRot", getPose().getRotation().getRotations());
-    }
+  if (est != null) {
+    Telemetry.putDouble("LL Tag Count", est.tagCount);
+    Telemetry.putDouble("LL Avg Tag Dist", est.avgTagDist);
+    Telemetry.putPose("LL Raw Pose", est.pose);
 
-    if (RobotBase.isReal()) {
-      Telemetry.putPose("Robot Pose", getPose());
-      Telemetry.putFieldPose("MainField", getPose());
+    Pose2d currentPose = poseEstimator.getEstimatedPosition();
+    double visionDeltaMeters =
+        currentPose.getTranslation().getDistance(est.pose.getTranslation());
+
+    Telemetry.putDouble("LL Pose Delta", visionDeltaMeters);
+
+    boolean goodTagCount = est.tagCount >= 2;
+    boolean goodSingleTag = est.tagCount == 1 && est.avgTagDist < 2.5;
+    boolean reasonableJump = visionDeltaMeters < 1.5;
+
+    if ((goodTagCount || goodSingleTag) && reasonableJump) {
+      poseEstimator.addVisionMeasurement(
+          est.pose,
+          est.timestampSeconds,
+          VisionConstants.kVisionStdDevs
+      );
+      acceptedVision = true;
     }
   }
+
+  Telemetry.putBoolean("LL Vision Accepted", acceptedVision);
+
+  if (RobotBase.isSimulation() && sim != null) {
+    field.setRobotPose(sim.getPose());
+    Telemetry.putDouble("simPoseX", getPose().getX());
+    Telemetry.putDouble("simPoseY", getPose().getY());
+    Telemetry.putDouble("simPoseRot", getPose().getRotation().getRotations());
+  }
+
+  if (RobotBase.isReal()) {
+    Telemetry.putPose("Robot Pose", getPose());
+    Telemetry.putFieldPose("MainField", getPose());
+  }
+}
+
 
   @Override
   public void simulationPeriodic() {

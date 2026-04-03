@@ -55,8 +55,7 @@ public class LimelightVision extends SubsystemBase {
      * Gets the robot pose estimated by AprilTags.
      */
     public Pose2d getEstimatedPose() {
-        LimelightHelpers.PoseEstimate estimate =
-            LimelightHelpers.getBotPoseEstimate_wpiBlue(LIMELIGHT_NAME);
+        LimelightHelpers.PoseEstimate estimate = getPoseEstimate();
 
         if (estimate != null && estimate.tagCount > 0) {
             Telemetry.putFieldPose("Limelight Pose", estimate.pose);
@@ -68,6 +67,10 @@ public class LimelightVision extends SubsystemBase {
     }
 
     public PoseEstimate getPoseEstimate() {
+        if (RobotContainer.isRedAlliance()) {
+            return LimelightHelpers.getBotPoseEstimate_wpiRed(LIMELIGHT_NAME);
+        }
+
         return LimelightHelpers.getBotPoseEstimate_wpiBlue(LIMELIGHT_NAME);
     }
 
