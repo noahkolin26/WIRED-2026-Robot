@@ -47,9 +47,7 @@ public class DynamicSetShooter extends Command {
 
   // given distance from the target in meters, return the estimated power
   public double getShootingPower(double distance) {
-    double inches = distance * 39.3701; // convert meters to inches
-    
-    return ShooterConstants.shootPowerLirp.getInterpolatedValue(inches);
+    return ShooterConstants.shootPowerLirp.getInterpolatedValue(distance);
   }
 
   // Returns true when the command should end.

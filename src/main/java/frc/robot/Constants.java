@@ -112,8 +112,8 @@ public final class Constants {
       {4.445, 0.6},  //{175, 0.6},
       {4.826, 0.7}   //{190, 0.7}
     };
-    public static final double shootPowerSHORT = 0.6;
-    public static final double shootPowerMEDIUM = 0.7;
+    public static final double shootPowerSHORT = 0.5;
+    public static final double shootPowerMEDIUM = 0.6;
     public static final double shootPowerLONG = 0.75;
     public static final double shootPowerFULL = 1;
 
