@@ -130,7 +130,8 @@ public class RobotContainer {
     xboxController1.rightBumper().whileTrue(new VisionHeadingAssist(m_driveSubsystem, m_limelightVision, hubAprilTag(), () -> -getDriverLeftY(), () -> -getDriverLeftX()));
 
     Trigger bothDriverTriggers = new Trigger(() -> ((xboxController1.getLeftTriggerAxis() > 0.5) && (xboxController1.getRightTriggerAxis() > 0.5))).debounce(1.5);
-    bothDriverTriggers.onTrue(Commands.runOnce(() -> m_driveSubsystem.resetToCenterOfHub(isRedAlliance())));
+    bothDriverTriggers.onTrue(Commands.runOnce(() -> m_driveSubsystem.resetToCenterOfHub(isRedAlliance(), false)));
+    xboxController1.y().multiPress(5, 3).onTrue(Commands.runOnce(() -> m_driveSubsystem.resetToCenterOfHub(isRedAlliance(), true)));
 
     xboxController1.b().onTrue(new SetIntake(m_intake, IntakeConstants.defaultIntakePower));
     xboxController1.a().onTrue(new SetIntake(m_intake, 0.0));

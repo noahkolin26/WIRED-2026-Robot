@@ -302,12 +302,14 @@ public class DriveSubsystem extends SubsystemBase {
     }
   }
 
-  public void resetToCenterOfHub(boolean isRed) {
+  public void resetToCenterOfHub(boolean isRed, boolean resetPose) {
       gyro.reset();
       if(RobotBase.isSimulation()) {
         simGyro.reset();
       }
-      //resetPose(getHubFrontPose(isRed));
+      if(resetPose) {
+        resetPose(getHubFrontPose(isRed));
+      }
     }
 
   public ChassisSpeeds getCurrentSpeeds() {

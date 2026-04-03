@@ -89,8 +89,8 @@ public final class Constants {
   public static class IntakeConstants {
     public static final int kIntakePort = 5;
 
-    public static final double defaultIntakePower = 0.8;
-    public static final double defaultReverseIntakePower = -0.9;
+    public static final double defaultIntakePower = 1.0;
+    public static final double defaultReverseIntakePower = -1.0;
   }
 
   public static class ThroatConstants {
