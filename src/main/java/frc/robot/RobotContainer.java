@@ -155,7 +155,7 @@ public class RobotContainer {
     xboxController2.b().onTrue(new SetShooter(m_shooter, ShooterConstants.shootPowerIDLE, false));
 
     // if breaking: change "onTrue" to "whileTrue" and "whileFalse" to "onFalse" (what it was before)
-    xboxController2.leftTrigger().onTrue(new SetThroat(m_throat, 1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 30));
+    xboxController2.leftTrigger().onTrue(new SetThroat(m_throat, 1.0).onlyIf(() -> m_shooter.getCurrentRPS() > 5));
     xboxController2.leftTrigger().whileFalse(new SetThroat(m_throat, -1.0));
 
     xboxController2.x().whileTrue(new RunShooter(m_shooter, () -> m_limelightVision.idealShootPower()));
