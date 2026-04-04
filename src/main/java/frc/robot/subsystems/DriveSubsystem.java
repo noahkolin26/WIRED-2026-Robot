@@ -376,6 +376,7 @@ public void periodic() {
     Telemetry.putDouble("LL Tag Count", est.tagCount);
     Telemetry.putDouble("LL Avg Tag Dist", est.avgTagDist);
     Telemetry.putPose("LL Raw Pose", est.pose);
+    Telemetry.putFieldObjectPose("MainField", "LL Raw Pose", est.pose);
 
     Pose2d currentPose = poseEstimator.getEstimatedPosition();
     double visionDeltaMeters =
